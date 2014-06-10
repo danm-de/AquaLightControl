@@ -1,4 +1,5 @@
-﻿using System.ServiceProcess;
+﻿using System;
+using System.ServiceProcess;
 
 namespace AquaLightControlService
 {
@@ -7,12 +8,18 @@ namespace AquaLightControlService
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
-        static void Main() {
-            var services_to_run = new ServiceBase[]{ 
-                new Service() 
-            };
+        static void Main(string[] args) {
+            var service = new Service();
+        
 
-            ServiceBase.Run(services_to_run);
+            if (Environment.UserInteractive) {
+                service.Start(args);
+                Console.WriteLine("Press any key to stop the program.");
+                Console.ReadKey();
+                service.Stop();
+            } else {
+                ServiceBase.Run(new ServiceBase[]{ service});
+            }
         }
     }
 }
