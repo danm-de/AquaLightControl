@@ -1,0 +1,71 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AquaLightControlService", "AquaLightControlService\AquaLightControlService.csproj", "{70BA3528-C0DA-43D3-B445-FE59A8D9E436}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{857C59C5-E5A8-449F-9A88-16E368027E4D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "raspberry-sharp-io", "raspberry-sharp-io", "{044F2952-002A-4E2C-B931-654688302BC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry.IO", "..\..\thirdparty\raspberry-sharp-io\Raspberry.IO\Raspberry.IO.csproj", "{ACE64F17-87E5-43E7-97A0-BDDE19059C61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry.IO.Components", "..\..\thirdparty\raspberry-sharp-io\Raspberry.IO.Components\Raspberry.IO.Components.csproj", "{8388CFCA-E3DB-43F7-B049-2CB195211CE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry.IO.GeneralPurpose", "..\..\thirdparty\raspberry-sharp-io\Raspberry.IO.GeneralPurpose\Raspberry.IO.GeneralPurpose.csproj", "{281C71ED-C36D-408E-8BAA-75C381DC17E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry.IO.InterIntegratedCircuit", "..\..\thirdparty\raspberry-sharp-io\Raspberry.IO.InterIntegratedCircuit\Raspberry.IO.InterIntegratedCircuit.csproj", "{63B8403E-BC56-43F9-A045-F61ECC3871F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry.IO.Interop", "..\..\thirdparty\raspberry-sharp-io\Raspberry.IO.Interop\Raspberry.IO.Interop.csproj", "{689CB6C4-3D23-45DA-8E00-87C28AEA32D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry.IO.SerialPeripheralInterface", "..\..\thirdparty\raspberry-sharp-io\Raspberry.IO.SerialPeripheralInterface\Raspberry.IO.SerialPeripheralInterface.csproj", "{326342E5-0411-40E8-9F2D-563D6B192568}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70BA3528-C0DA-43D3-B445-FE59A8D9E436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70BA3528-C0DA-43D3-B445-FE59A8D9E436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70BA3528-C0DA-43D3-B445-FE59A8D9E436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70BA3528-C0DA-43D3-B445-FE59A8D9E436}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACE64F17-87E5-43E7-97A0-BDDE19059C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACE64F17-87E5-43E7-97A0-BDDE19059C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACE64F17-87E5-43E7-97A0-BDDE19059C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACE64F17-87E5-43E7-97A0-BDDE19059C61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8388CFCA-E3DB-43F7-B049-2CB195211CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8388CFCA-E3DB-43F7-B049-2CB195211CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8388CFCA-E3DB-43F7-B049-2CB195211CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8388CFCA-E3DB-43F7-B049-2CB195211CE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{281C71ED-C36D-408E-8BAA-75C381DC17E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{281C71ED-C36D-408E-8BAA-75C381DC17E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{281C71ED-C36D-408E-8BAA-75C381DC17E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{281C71ED-C36D-408E-8BAA-75C381DC17E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63B8403E-BC56-43F9-A045-F61ECC3871F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63B8403E-BC56-43F9-A045-F61ECC3871F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63B8403E-BC56-43F9-A045-F61ECC3871F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63B8403E-BC56-43F9-A045-F61ECC3871F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{689CB6C4-3D23-45DA-8E00-87C28AEA32D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{689CB6C4-3D23-45DA-8E00-87C28AEA32D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{689CB6C4-3D23-45DA-8E00-87C28AEA32D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{689CB6C4-3D23-45DA-8E00-87C28AEA32D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{326342E5-0411-40E8-9F2D-563D6B192568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{326342E5-0411-40E8-9F2D-563D6B192568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{326342E5-0411-40E8-9F2D-563D6B192568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{326342E5-0411-40E8-9F2D-563D6B192568}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{044F2952-002A-4E2C-B931-654688302BC8} = {857C59C5-E5A8-449F-9A88-16E368027E4D}
+		{ACE64F17-87E5-43E7-97A0-BDDE19059C61} = {044F2952-002A-4E2C-B931-654688302BC8}
+		{8388CFCA-E3DB-43F7-B049-2CB195211CE8} = {044F2952-002A-4E2C-B931-654688302BC8}
+		{281C71ED-C36D-408E-8BAA-75C381DC17E7} = {044F2952-002A-4E2C-B931-654688302BC8}
+		{63B8403E-BC56-43F9-A045-F61ECC3871F3} = {044F2952-002A-4E2C-B931-654688302BC8}
+		{689CB6C4-3D23-45DA-8E00-87C28AEA32D0} = {044F2952-002A-4E2C-B931-654688302BC8}
+		{326342E5-0411-40E8-9F2D-563D6B192568} = {044F2952-002A-4E2C-B931-654688302BC8}
+	EndGlobalSection
+EndGlobal
