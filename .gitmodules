@@ -1,0 +1,3 @@
+[submodule "thirdparty/raspberry-sharp-io"]
+	path = thirdparty/raspberry-sharp-io
+	url = git@github.com:danm-de/raspberry-sharp-io.git
