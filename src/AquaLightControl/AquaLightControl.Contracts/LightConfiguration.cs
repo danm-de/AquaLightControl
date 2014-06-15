@@ -1,10 +1,14 @@
-﻿namespace AquaLightControl
+﻿using System.Runtime.Serialization;
+
+namespace AquaLightControl
 {
-    public class LightConfiguration
+    [DataContract(Name="lightConfiguration")]
+    public sealed class LightConfiguration
     {
-        public long Start { get; set; }
-        public long StartValue { get; set; }
-        public long End { get; set; }
-        public long EndValue { get; set; }
+        [DataMember(Name= "ledStripe")]
+        public LedStripe LedStripe { get; set; }
+        
+        [DataMember(Name = "lightTimes")]
+        public LightTime[] LightTimes { get; set; }
     }
 }

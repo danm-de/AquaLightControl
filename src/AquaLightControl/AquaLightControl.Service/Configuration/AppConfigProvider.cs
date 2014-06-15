@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using AquaLightControl.Configuration;
 
 namespace AquaLightControl.Service.Configuration
 {

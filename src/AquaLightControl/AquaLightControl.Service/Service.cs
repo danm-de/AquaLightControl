@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ServiceProcess;
-using AquaLightControl.Service.Configuration;
+using AquaLightControl.Configuration;
 using AquaLightControl.Service.Initialization;
 using AquaLightControl.Service.Install;
-using AquaLightControl.Service.ServiceLocator;
+using AquaLightControl.ServiceLocator;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.Owin.Hosting;

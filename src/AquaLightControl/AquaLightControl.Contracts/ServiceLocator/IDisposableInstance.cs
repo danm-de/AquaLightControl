@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AquaLightControl.Service.ServiceLocator
+namespace AquaLightControl.ServiceLocator
 {
     public interface IDisposableInstance<out T> : IDisposable
     {

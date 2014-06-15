@@ -1,12 +1,19 @@
-﻿namespace AquaLightControl
-{
-    public class LedStripe
-    {
-        public int DeviceNumber { get; set; }
-        public int ChannelNumber { get; set; }
-        public bool Invert { get; set; }
-        public string Name { get; set; }
+using System.Runtime.Serialization;
 
-        public LightConfiguration[] LightTimes { get; set; }
+namespace AquaLightControl
+{
+    [DataContract(Name="ledStripe")]
+    public sealed class LedStripe {
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+        
+        [DataMember(Name="deviceNumber")]
+        public int DeviceNumber { get; set; }
+        
+        [DataMember(Name = "channelNumber")]
+        public int ChannelNumber { get; set; }
+        
+        [DataMember(Name = "invert")]
+        public bool Invert { get; set; }
     }
 }

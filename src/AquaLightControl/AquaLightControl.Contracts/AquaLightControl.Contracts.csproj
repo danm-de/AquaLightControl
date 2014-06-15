@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,10 +41,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
+    <Compile Include="Configuration\IConfigProvider.cs" />
+    <Compile Include="Exceptions\LightTimesMissingException.cs" />
+    <Compile Include="Exceptions\NonContinuousLightTimesException.cs" />
     <Compile Include="LedStripe.cs" />
     <Compile Include="LightConfiguration.cs" />
+    <Compile Include="LightTest.cs" />
+    <Compile Include="LightTime.cs" />
+    <Compile Include="Math\ILineFunction.cs" />
+    <Compile Include="Math\ILineFunctionFactory.cs" />
+    <Compile Include="OperationMode.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceLocator\IDisposableInstance.cs" />
+    <Compile Include="ServiceLocator\IServiceLocator.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

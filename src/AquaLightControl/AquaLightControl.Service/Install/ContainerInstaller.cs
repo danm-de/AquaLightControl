@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AquaLightControl.Configuration;
 using AquaLightControl.Service.Configuration;
 using AquaLightControl.Service.ServiceLocator;
+using AquaLightControl.ServiceLocator;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;

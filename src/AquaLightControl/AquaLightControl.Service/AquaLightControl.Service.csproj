@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AppConfigProvider.cs" />
-    <Compile Include="Configuration\IConfigProvider.cs" />
     <Compile Include="Initialization\Bootstrapper.cs" />
     <Compile Include="Install\ContainerInstaller.cs" />
     <Compile Include="IService.cs" />
@@ -91,8 +90,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceLocator\IDisposableInstance.cs" />
-    <Compile Include="ServiceLocator\IServiceLocator.cs" />
     <Compile Include="ServiceLocator\ResolvedInstance.cs" />
     <Compile Include="ServiceLocator\ServiceLocatorImpl.cs" />
   </ItemGroup>
@@ -129,6 +126,10 @@
     <ProjectReference Include="..\..\..\thirdparty\raspberry-sharp-io\Raspberry.IO\Raspberry.IO.csproj">
       <Project>{ace64f17-87e5-43e7-97a0-bdde19059c61}</Project>
       <Name>Raspberry.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AquaLightControl.Contracts\AquaLightControl.Contracts.csproj">
+      <Project>{b4fdf803-e8da-4896-9188-765b89b04eeb}</Project>
+      <Name>AquaLightControl.Contracts</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

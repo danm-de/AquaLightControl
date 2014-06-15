@@ -1,4 +1,5 @@
-﻿using Castle.Windsor;
+﻿using AquaLightControl.ServiceLocator;
+using Castle.Windsor;
 
 namespace AquaLightControl.Service.ServiceLocator
 {

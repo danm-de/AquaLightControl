@@ -1,4 +1,5 @@
 ﻿using System;
+using AquaLightControl.ServiceLocator;
 
 namespace AquaLightControl.Service.ServiceLocator
 {

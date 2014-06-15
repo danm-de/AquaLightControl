@@ -1,4 +1,4 @@
-﻿namespace AquaLightControl.Service.ServiceLocator
+﻿namespace AquaLightControl.ServiceLocator
 {
     public interface IServiceLocator
     {
