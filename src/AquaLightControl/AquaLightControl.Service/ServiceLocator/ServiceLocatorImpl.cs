@@ -1,6 +1,6 @@
 ﻿using Castle.Windsor;
 
-namespace AquaLightControlService.ServiceLocator
+namespace AquaLightControl.Service.ServiceLocator
 {
     internal sealed class ServiceLocatorImpl : IServiceLocator
     {

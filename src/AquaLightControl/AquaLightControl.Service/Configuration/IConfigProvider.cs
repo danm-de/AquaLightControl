@@ -1,4 +1,4 @@
-﻿namespace AquaLightControlService.Configuration
+﻿namespace AquaLightControl.Service.Configuration
 {
     public interface IConfigProvider
     {

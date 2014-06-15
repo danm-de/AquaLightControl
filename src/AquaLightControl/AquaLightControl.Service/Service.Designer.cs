@@ -1,4 +1,4 @@
-﻿namespace AquaLightControlService
+﻿namespace AquaLightControl.Service
 {
     partial class Service
     {

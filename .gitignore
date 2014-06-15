@@ -21,7 +21,6 @@ TestResults
 *.[Rr]e[Ss]harper  
 _[Rr]e[Ss]harper.*
 
-  
 # OS generated files  
 **/[Tt]humbs.db
 **/[Dd]esktop.ini
@@ -29,9 +28,6 @@ _[Rr]e[Ss]harper.*
 # Nuget packages
 packages/*
 !packages/repositories.config
-
-src/AquaLightControl/packages/*
-!src/AquaLightControl/packages/repositories.config
 
 # Visual Studio profiler
 *.psess

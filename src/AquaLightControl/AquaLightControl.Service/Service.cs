@@ -1,20 +1,15 @@
 ﻿using System;
 using System.ServiceProcess;
-using AquaLightControlService.Configuration;
-using AquaLightControlService.Initialization;
-using AquaLightControlService.Install;
-using AquaLightControlService.ServiceLocator;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Proxy;
+using AquaLightControl.Service.Configuration;
+using AquaLightControl.Service.Initialization;
+using AquaLightControl.Service.Install;
+using AquaLightControl.Service.ServiceLocator;
 using Castle.MicroKernel.Registration;
-using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.Windsor;
 using Microsoft.Owin.Hosting;
-using Nancy.Bootstrappers.Windsor;
 using Owin;
 
-namespace AquaLightControlService
+namespace AquaLightControl.Service
 {
     public partial class Service : ServiceBase, IService
     {

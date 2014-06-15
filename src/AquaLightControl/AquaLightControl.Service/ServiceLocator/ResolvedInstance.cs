@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AquaLightControlService.ServiceLocator
+namespace AquaLightControl.Service.ServiceLocator
 {
     internal sealed class ResolvedInstance<T> : IDisposableInstance<T>
     {

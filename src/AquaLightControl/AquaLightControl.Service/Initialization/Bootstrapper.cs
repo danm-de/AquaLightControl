@@ -1,7 +1,7 @@
 ﻿using Castle.Windsor;
 using Nancy.Bootstrappers.Windsor;
 
-namespace AquaLightControlService.Initialization
+namespace AquaLightControl.Service.Initialization
 {
     public sealed class Bootstrapper : WindsorNancyBootstrapper
     {

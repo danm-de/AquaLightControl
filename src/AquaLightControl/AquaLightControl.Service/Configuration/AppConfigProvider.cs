@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace AquaLightControlService.Configuration
+namespace AquaLightControl.Service.Configuration
 {
     public sealed class AppConfigProvider : IConfigProvider {
         public string GetKey(string key_name) {

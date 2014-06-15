@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AquaLightControlService.Configuration;
-using AquaLightControlService.ServiceLocator;
+using AquaLightControl.Service.Configuration;
+using AquaLightControl.Service.ServiceLocator;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
@@ -9,7 +9,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Nancy.Bootstrappers.Windsor;
 
-namespace AquaLightControlService.Install
+namespace AquaLightControl.Service.Install
 {
     public sealed class ContainerInstaller : IWindsorInstaller
     {

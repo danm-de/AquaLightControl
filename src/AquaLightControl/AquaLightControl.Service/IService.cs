@@ -1,4 +1,4 @@
-﻿namespace AquaLightControlService
+﻿namespace AquaLightControl.Service
 {
     public interface IService
     {

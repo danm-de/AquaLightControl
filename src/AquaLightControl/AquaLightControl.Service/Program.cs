@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ServiceProcess;
 
-namespace AquaLightControlService
+namespace AquaLightControl.Service
 {
     static class Program
     {
