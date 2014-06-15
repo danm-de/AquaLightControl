@@ -27,7 +27,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1C7800C1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.AquaLightControl.Service", "Tests\Tests.AquaLightControl.Service\Tests.AquaLightControl.Service.csproj", "{1DEEB6C9-5375-45E4-9022-BFB7A9DEF446}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{83CC827E-913C-473F-B844-85736B8A2866}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AquaLightControl.Math", "AquaLightControl\AquaLightControl.Math\AquaLightControl.Math.csproj", "{8226BA1D-9BE3-40D5-A684-6A5BD482734D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.AquaLightControl.Math", "Tests\Tests.AquaLightControl.Math\Tests.AquaLightControl.Math.csproj", "{071DF0E9-C483-406F-942D-4872474841BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.AquaLightControl", "Tests\Tests.AquaLightControl\Tests.AquaLightControl.csproj", "{4DF1F4CE-0114-4E9F-AC44-9B12D90436C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FB6D8DD7-724F-46F0-BCE2-5A9C73B08CFE}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
@@ -76,6 +82,18 @@ Global
 		{1DEEB6C9-5375-45E4-9022-BFB7A9DEF446}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DEEB6C9-5375-45E4-9022-BFB7A9DEF446}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DEEB6C9-5375-45E4-9022-BFB7A9DEF446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8226BA1D-9BE3-40D5-A684-6A5BD482734D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8226BA1D-9BE3-40D5-A684-6A5BD482734D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8226BA1D-9BE3-40D5-A684-6A5BD482734D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8226BA1D-9BE3-40D5-A684-6A5BD482734D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{071DF0E9-C483-406F-942D-4872474841BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{071DF0E9-C483-406F-942D-4872474841BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{071DF0E9-C483-406F-942D-4872474841BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{071DF0E9-C483-406F-942D-4872474841BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF1F4CE-0114-4E9F-AC44-9B12D90436C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF1F4CE-0114-4E9F-AC44-9B12D90436C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF1F4CE-0114-4E9F-AC44-9B12D90436C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF1F4CE-0114-4E9F-AC44-9B12D90436C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,5 +107,7 @@ Global
 		{689CB6C4-3D23-45DA-8E00-87C28AEA32D0} = {044F2952-002A-4E2C-B931-654688302BC8}
 		{326342E5-0411-40E8-9F2D-563D6B192568} = {044F2952-002A-4E2C-B931-654688302BC8}
 		{1DEEB6C9-5375-45E4-9022-BFB7A9DEF446} = {1C7800C1-0E2D-4C49-BA3D-82C95346B37B}
+		{071DF0E9-C483-406F-942D-4872474841BF} = {1C7800C1-0E2D-4C49-BA3D-82C95346B37B}
+		{4DF1F4CE-0114-4E9F-AC44-9B12D90436C3} = {1C7800C1-0E2D-4C49-BA3D-82C95346B37B}
 	EndGlobalSection
 EndGlobal

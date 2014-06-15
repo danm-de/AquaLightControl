@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1DEEB6C9-5375-45E4-9022-BFB7A9DEF446}</ProjectGuid>
+    <ProjectGuid>{071DF0E9-C483-406F-942D-4872474841BF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tests.AquaLightControl.Service</RootNamespace>
-    <AssemblyName>Tests.AquaLightControl.Service</AssemblyName>
+    <RootNamespace>Tests.AquaLightControl.Math</RootNamespace>
+    <AssemblyName>Tests.AquaLightControl.Math</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -54,7 +53,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PowerCalculatorSpecs\PowerCalculatorSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AquaLightControl\AquaLightControl.Contracts\AquaLightControl.Contracts.csproj">
+      <Project>{b4fdf803-e8da-4896-9188-765b89b04eeb}</Project>
+      <Name>AquaLightControl.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AquaLightControl\AquaLightControl.Math\AquaLightControl.Math.csproj">
+      <Project>{8226ba1d-9be3-40d5-a684-6a5bd482734d}</Project>
+      <Name>AquaLightControl.Math</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tests.AquaLightControl\Tests.AquaLightControl.csproj">
+      <Project>{4df1f4ce-0114-4e9f-ac44-9b12d90436c3}</Project>
+      <Name>Tests.AquaLightControl</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

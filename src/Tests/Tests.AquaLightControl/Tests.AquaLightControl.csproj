@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1DEEB6C9-5375-45E4-9022-BFB7A9DEF446}</ProjectGuid>
+    <ProjectGuid>{4DF1F4CE-0114-4E9F-AC44-9B12D90436C3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tests.AquaLightControl.Service</RootNamespace>
-    <AssemblyName>Tests.AquaLightControl.Service</AssemblyName>
+    <RootNamespace>Tests.AquaLightControl</RootNamespace>
+    <AssemblyName>Tests.AquaLightControl</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -55,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spec.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
