@@ -23,7 +23,7 @@ namespace AquaLightControl.Service.Install
             container.Register(Registrations(container).ToArray());
         }
 
-        public static IEnumerable<IRegistration> Registrations(IWindsorContainer container) {
+        private static IEnumerable<IRegistration> Registrations(IWindsorContainer container) {
             yield return Component
                 .For<IConfigProvider>()
                 .ImplementedBy<AppConfigProvider>()

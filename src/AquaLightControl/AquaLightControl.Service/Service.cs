@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceProcess;
 using AquaLightControl.Configuration;
+using AquaLightControl.Service.Devices;
 using AquaLightControl.Service.Initialization;
 using AquaLightControl.Service.Install;
 using AquaLightControl.ServiceLocator;
@@ -20,6 +21,7 @@ namespace AquaLightControl.Service
         private readonly IServiceLocator _service_locator;
         
         private IDisposable _nancy_self_host;
+        private IDisposableInstance<IDeviceWorker> _device_worker_disposable;
 
         public Service() {
             InitializeComponent();
@@ -30,7 +32,13 @@ namespace AquaLightControl.Service
 
         private static IWindsorContainer CreateWindsorContainer() {
             var container = new WindsorContainer();
-            container.Install(new IWindsorInstaller[] {new ContainerInstaller()});
+            
+            container.Install(new IWindsorInstaller[] {
+                new ContainerInstaller(), 
+                new SerializationInstaller(),
+                new DeviceInstaller()
+            });
+
             return container;
         }
 
@@ -46,6 +54,9 @@ namespace AquaLightControl.Service
                 url = config_provider.Value.GetKey(URL_KEY) ?? DEFAULT_URL;
             }
 
+            _device_worker_disposable = _service_locator.Resolve<IDeviceWorker>();
+            _device_worker_disposable.Value.Start();
+           
             _nancy_self_host = WebApp.Start(url, WebAppStartUp);
         }
 
@@ -56,6 +67,9 @@ namespace AquaLightControl.Service
 
             _nancy_self_host.Dispose();
             _nancy_self_host = null;
+
+            _device_worker_disposable.Value.Stop();
+            _device_worker_disposable.Dispose();
         }
 
         public void Start(string[] args) {

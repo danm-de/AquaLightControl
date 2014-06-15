@@ -8,7 +8,7 @@ namespace AquaLightControl
         [DataMember(Name = "ledStripe")]
         public LedStripe LedStripe { get; set; }
 
-        [DataMember(Name = "value")]
-        public long Value { get; set; }
+        [DataMember(Name = "pwmValue")]
+        public long PwmValue { get; set; }
     }
 }
