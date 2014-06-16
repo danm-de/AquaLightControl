@@ -29,6 +29,11 @@ namespace AquaLightControl.Service.Install
                     .For<IDeviceWorker>()
                     .ImplementedBy<DeviceWorker>()
                     .LifestyleSingleton();
+
+                yield return Component
+                    .For<ILedDeviceConfiguration>()
+                    .ImplementedBy<LedDeviceConfiguration>()
+                    .LifestyleSingleton();
             }
         }
     }

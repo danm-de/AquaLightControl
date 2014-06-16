@@ -2,10 +2,10 @@
 
 namespace AquaLightControl
 {
-    [DataContract(Name="serviceConfiguration")]
-    public sealed class ServiceConfiguration
+    [DataContract(Name="dailyLightConfiguration")]
+    public sealed class DailyLightConfiguration
     {
-        [DataMember(Name="ledStripesConfiguration")]
+        [DataMember(Name = "lightsConfiguration")]
         public LightConfiguration[] LightsConfiguration { get; set; }
 
     }

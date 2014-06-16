@@ -96,6 +96,8 @@
     <Compile Include="Devices\IDeviceController.cs" />
     <Compile Include="Devices\Exceptions\NotInitializedException.cs" />
     <Compile Include="Devices\IDeviceWorker.cs" />
+    <Compile Include="Devices\ILedDeviceConfiguration.cs" />
+    <Compile Include="Devices\LedDeviceConfiguration.cs" />
     <Compile Include="Initialization\Bootstrapper.cs" />
     <Compile Include="Install\ContainerInstaller.cs" />
     <Compile Include="Install\DeviceInstaller.cs" />
@@ -113,7 +115,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceLocator\ResolvedInstance.cs" />
     <Compile Include="ServiceLocator\ServiceLocatorImpl.cs" />
-    <Compile Include="WebModules\TestModule.cs" />
+    <Compile Include="WebModules\PingModule.cs" />
+    <Compile Include="WebModules\StripesModule.cs" />
+    <Compile Include="WebModules\SetModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

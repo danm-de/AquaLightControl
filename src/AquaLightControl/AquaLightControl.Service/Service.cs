@@ -54,9 +54,11 @@ namespace AquaLightControl.Service
                 url = config_provider.Value.GetKey(URL_KEY) ?? DEFAULT_URL;
             }
 
-            _device_worker_disposable = _service_locator.Resolve<IDeviceWorker>();
-            _device_worker_disposable.Value.Start();
-           
+            if (IsRunningOnMono()) {
+                _device_worker_disposable = _service_locator.Resolve<IDeviceWorker>();
+                _device_worker_disposable.Value.Start();
+            }
+
             _nancy_self_host = WebApp.Start(url, WebAppStartUp);
         }
 
@@ -68,12 +70,18 @@ namespace AquaLightControl.Service
             _nancy_self_host.Dispose();
             _nancy_self_host = null;
 
-            _device_worker_disposable.Value.Stop();
-            _device_worker_disposable.Dispose();
+            if (IsRunningOnMono()) {
+                _device_worker_disposable.Value.Stop();
+                _device_worker_disposable.Dispose();
+            }
         }
 
         public void Start(string[] args) {
             OnStart(args);
+        }
+
+        public static bool IsRunningOnMono() {
+            return Type.GetType("Mono.Runtime") != null;
         }
     }
 }

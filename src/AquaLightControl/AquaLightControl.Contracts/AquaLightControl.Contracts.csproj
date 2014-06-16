@@ -41,14 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs" />
+    <Compile Include="DailyLightConfiguration.cs" />
     <Compile Include="Configuration\IConfigProvider.cs" />
     <Compile Include="Configuration\IConfigurationStore.cs" />
     <Compile Include="Exceptions\LightTimesMissingException.cs" />
     <Compile Include="Exceptions\NonContinuousLightTimesException.cs" />
     <Compile Include="LedStripe.cs" />
     <Compile Include="LightConfiguration.cs" />
-    <Compile Include="LightTest.cs" />
     <Compile Include="LightTime.cs" />
     <Compile Include="Math\ILineFunction.cs" />
     <Compile Include="Math\ILineFunctionFactory.cs" />
