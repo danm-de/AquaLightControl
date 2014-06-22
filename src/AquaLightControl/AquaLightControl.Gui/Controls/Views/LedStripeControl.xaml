@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="AquaLightControl.Gui.Controls.Views.LedStripeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="240" d:DesignWidth="430">
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Margin="5" Grid.Row="0" Grid.Column="0">Name:</TextBlock>
+            <TextBox Margin="5" Grid.Row="0" Grid.Column="1" controls:TextboxHelper.Watermark="Name hier eintragen" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Margin="5" Grid.Row="1" Grid.Column="0">Gerätenummer:</TextBlock>
+            <controls:NumericUpDown Margin="5" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding Path=DeviceNumber}"></controls:NumericUpDown>
+            
+            <TextBlock Margin="5" Grid.Row="2" Grid.Column="0">Kanalnummer:</TextBlock>
+            <controls:NumericUpDown Margin="5" Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="11" Value="{Binding Path=ChannelNumber}"></controls:NumericUpDown>
+            
+            <TextBlock Margin="5" Grid.Row="3" Grid.Column="0">Invertiere:</TextBlock>
+            <controls:ToggleSwitch Margin="5" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" IsChecked="{Binding Path=IsInverted}" />
+            
+            <TextBlock Margin="5" Grid.Row="4" Grid.Column="0">Farbe:</TextBlock>
+            <Grid Grid.Row="4" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock 
+                    Grid.Column="0" Grid.Row="0"
+                    Background="{Binding Path=Color}" 
+                    Height="25" 
+                    Width="25" />
+                <StackPanel Margin="5" Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                    <TextBlock Margin="5">R:</TextBlock>
+                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Red}"></controls:NumericUpDown>
+                    <TextBlock Margin="5">G:</TextBlock>
+                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Green}"></controls:NumericUpDown>
+                    <TextBlock Margin="5">B:</TextBlock>
+                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Blue}"></controls:NumericUpDown>
+                </StackPanel>
+            </Grid>
+            <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="{Binding Path=SaveCommand}" Margin="5" Width="80" Style="{StaticResource AccentedSquareButtonStyle}">Speichern</Button>
+                <Button Command="{Binding Path=CancelCommand}" Margin="5" Width="80" Style="{StaticResource AccentedSquareButtonStyle}">Abbruch</Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

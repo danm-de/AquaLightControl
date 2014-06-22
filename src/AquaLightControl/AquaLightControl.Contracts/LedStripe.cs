@@ -19,5 +19,8 @@ namespace AquaLightControl
         
         [DataMember(Name = "invert")]
         public bool Invert { get; set; }
+
+        [DataMember(Name="color")]
+        public RgbColor Color { get; set; }
     }
 }

@@ -1,0 +1,160 @@
+﻿<controls:MetroWindow x:Class="AquaLightControl.Gui.Views.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:oxy="http://oxyplot.codeplex.com"
+                      xmlns:converters="clr-namespace:AquaLightControl.Gui.Converters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                      xmlns:usercontrols="clr-namespace:AquaLightControl.Gui.Controls.Views"
+                      mc:Ignorable="d"
+                      Title="MainWindow" Height="453" Width="718">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <dialogs:SimpleDialog x:Key="LedStripeDialog" Title="LED hinzufügen">
+                <usercontrols:LedStripeControl></usercontrols:LedStripeControl>
+            </dialogs:SimpleDialog>
+        </ResourceDictionary> 
+    </Window.Resources>
+
+    <Grid d:DataContext="{d:DesignData MainWindowViewModel}">
+        <Grid.Resources>
+            <converters:EnumVisibilityConverter x:Key="ConnectionStateVisibilityConverter" />
+
+        </Grid.Resources>
+        <controls:MetroContentControl>
+            <TabControl>
+                <TabItem Header="Server">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0"
+                                 Grid.Column="0"
+                                 Margin="5"
+                                 Text ="{Binding BaseUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 controls:TextboxHelper.Watermark="Serveradresse hier eingeben"
+                                 controls:TextboxHelper.ClearTextButton="True" />
+
+                        <Button Grid.Row="1"
+                                Grid.Column="0"
+                                Width="200"
+                                Margin="5,10"
+                                Command="{Binding Path=CheckConnectionStateCommand}"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource AccentedSquareButtonStyle}"
+                                Content="Verbindung testen" />
+
+                        <TextBlock Grid.Row="3"
+                                   Grid.Column="0" 
+                                   Background="DarkRed"
+                                   Foreground="White"
+                                   TextAlignment="Center"
+                                   Height="25"
+                                   Text="Verbindung fehlgeschlagen" 
+                                   Visibility="{Binding Path=ConnectionState, Converter={StaticResource ConnectionStateVisibilityConverter}, ConverterParameter=Failed}"
+                        />
+                        <TextBlock Grid.Row="3" 
+                                   Grid.Column="0" 
+                                   Background="DarkOliveGreen"
+                                   Foreground="White"
+                                   TextAlignment="Center"
+                                   Height="25"
+                                   Text="Verbindung erfolgreich" 
+                                   Visibility="{Binding Path=ConnectionState, Converter={StaticResource ConnectionStateVisibilityConverter}, ConverterParameter=Success}"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="LED-Streifen">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <DataGrid Grid.Row="0"
+                                  Grid.Column="0"
+                                  Margin="5"
+                                  ItemsSource="{Binding LedStripes}"
+                                  AutoGenerateColumns="True"
+                                  Style="{StaticResource AzureDataGrid}" />
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                            <Button Command="{Binding Path=AddLedStripeCommand}"
+                                Margin="0,5" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_add}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+
+                            <Button Margin="0,5" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                                <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_delete}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Lichtzeiten">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <oxy:PlotView Grid.Row="0" Grid.Column="0" />
+                        <Grid Grid.Row="1" Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <controls:SplitButton 
+                                Grid.Column="0" 
+                                Grid.Row="0" 
+                                Margin="5,10,5,10"
+                            />
+
+                            <Button
+                                Grid.Column="1"
+                                Grid.Row="0"
+                                Width="80"
+                                Margin="5,10"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource AccentedSquareButtonStyle}"
+                                Content="Laden" />
+
+                            <Button
+                                Grid.Column="2"
+                                Grid.Row="0"
+                                Width="80"
+                                Margin="5,10"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource AccentedSquareButtonStyle}"
+                                Content="Speichern" />
+                        </Grid>
+
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </controls:MetroContentControl>
+    </Grid>
+</controls:MetroWindow>
