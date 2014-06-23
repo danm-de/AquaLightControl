@@ -7,7 +7,7 @@
                       xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:usercontrols="clr-namespace:AquaLightControl.Gui.Controls.Views"
                       mc:Ignorable="d"
-                      Title="MainWindow" Height="453" Width="718">
+                      Title="MainWindow" Height="453" Width="800">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -20,7 +20,6 @@
     <Grid d:DataContext="{d:DesignData MainWindowViewModel}">
         <Grid.Resources>
             <converters:EnumVisibilityConverter x:Key="ConnectionStateVisibilityConverter" />
-
         </Grid.Resources>
         <controls:MetroContentControl>
             <TabControl>
@@ -49,7 +48,9 @@
                                 Command="{Binding Path=CheckConnectionStateCommand}"
                                 HorizontalAlignment="Right"
                                 Style="{StaticResource AccentedSquareButtonStyle}"
-                                Content="Verbindung testen" />
+                         >
+                            <TextBlock>Verbindung testen</TextBlock>
+                        </Button>
 
                         <TextBlock Grid.Row="3"
                                    Grid.Column="0" 
@@ -76,19 +77,55 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <DataGrid Grid.Row="0"
                                   Grid.Column="0"
                                   Margin="5"
-                                  ItemsSource="{Binding LedStripes}"
-                                  AutoGenerateColumns="True"
-                                  Style="{StaticResource AzureDataGrid}" />
+                                  ItemsSource="{Binding Path=LedStripes}"
+                                  SelectedItem="{Binding Path=SelectedLedStripe}"
+                                  AutoGenerateColumns="False"
+                                  Style="{StaticResource AzureDataGrid}" 
+                                  CanUserSortColumns="True"
+                                  CanUserReorderColumns="False"
+                                  SelectionMode="Single"
+                                  >
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Farbe" Width="60" IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Width="20" Background="{Binding Path=Color}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Name" Width="300" IsReadOnly="True" CanUserSort="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Name}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Gerätenummer" Width="120" IsReadOnly="True" CanUserSort="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=DeviceNumber}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Kanal" Width="120" IsReadOnly="True" CanUserSort="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=Channel}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
 
                         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                            <Button Command="{Binding Path=AddLedStripeCommand}"
+                            <Button Command="{Binding Path=NewLedStripeCommand}"
                                 Margin="0,5" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
                                 <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                     <Rectangle.OpacityMask>
@@ -97,13 +134,27 @@
                                 </Rectangle>
                             </Button>
 
-                            <Button Margin="0,5" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                            <Button 
+                                Command="{Binding Path=EditLedStripeCommand}"
+                                Margin="0,5" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
                                 <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                     <Rectangle.OpacityMask>
-                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_delete}" />
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_edit}" />
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                             </Button>
+
+                            <Button 
+                                Command="{Binding Path=RefreshCommand}"
+                                Margin="0,5,0,0" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                                
+                                <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_refresh}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -113,12 +164,15 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <oxy:PlotView Grid.Row="0" Grid.Column="0" />
-                        <Grid Grid.Row="1" Grid.Column="0">
+                        <oxy:PlotView Grid.Row="1" Grid.Column="0" />
+                        <Grid Grid.Row="2" Grid.Column="0">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -127,29 +181,70 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <controls:SplitButton 
-                                Grid.Column="0" 
-                                Grid.Row="0" 
-                                Margin="5,10,5,10"
-                            />
+                            <Button 
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                Command="{Binding Path=RefreshCommand}"
+                                Margin="0,5,0,0" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
 
-                            <Button
+                                <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_refresh}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+
+                            <ToggleButton
                                 Grid.Column="1"
                                 Grid.Row="0"
-                                Width="80"
-                                Margin="5,10"
-                                HorizontalAlignment="Right"
-                                Style="{StaticResource AccentedSquareButtonStyle}"
-                                Content="Laden" />
+                                Margin="0,5,0,0" Width="50" Height="50"
+                                Style="{DynamicResource MetroCircleToggleButtonStyle}">
+                                <Rectangle Width="20"
+                                    Height="20"
+                                    Fill="{DynamicResource BlackBrush}">
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Fill"
+                                                        Visual="{DynamicResource appbar_graph_line}"/>
+                                        </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </ToggleButton>
+
+                            <controls:SplitButton 
+                                Grid.Column="2" 
+                                Grid.Row="0" 
+                                Margin="5,10,5,10"
+                                ItemsSource="{Binding Path=LedStripes}"
+                                SelectedItem="{Binding Path=SelectedLedStripe}"
+                                >
+                                <controls:SplitButton.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Margin="0,5"  Width="20" Background="{Binding Path=Color}" VerticalAlignment="Center" />
+                                            <TextBlock Margin="10,5,0,0" Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </controls:SplitButton.ItemTemplate>
+                                
+                            </controls:SplitButton>
 
                             <Button
-                                Grid.Column="2"
+                                Grid.Column="3"
                                 Grid.Row="0"
                                 Width="80"
                                 Margin="5,10"
                                 HorizontalAlignment="Right"
-                                Style="{StaticResource AccentedSquareButtonStyle}"
-                                Content="Speichern" />
+                                Style="{StaticResource AccentedSquareButtonStyle}">
+                                <TextBlock>Laden</TextBlock></Button>
+
+                            <Button
+                                Grid.Column="4"
+                                Grid.Row="0"
+                                Width="80"
+                                Margin="5,10"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource AccentedSquareButtonStyle}">
+                                <TextBlock>Speichern</TextBlock>
+                            </Button>
                         </Grid>
 
                     </Grid>

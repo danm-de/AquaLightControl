@@ -8,7 +8,7 @@
 // ReSharper disable IntroduceOptionalParameters.Global
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable InconsistentNaming
-
+// ReSharper disable once CheckNamespace
 namespace AquaLightControl.ClientApi.Annotations
 {
   /// <summary>

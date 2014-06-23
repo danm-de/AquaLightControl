@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace AquaLightControl.Gui
 {
     public interface ILedStripeViewer
     {
-        Task View(Action<LedStripe> save_command);
+        Task View(LedStripe led_stripe);
     }
 }

@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AquaLightControl.ClientApi
 {
     public interface IAquaLightConnection
     {
         string BaseUrl { get; set; }
-        Task Ping();
-        Task<IEnumerable<LedStripe>> GetAllStripes();
-        Task Save(LedStripe led_stripe);
+        void Ping();
+        IEnumerable<LedStripe> GetAllStripes();
+        void Save(LedStripe led_stripe);
+        void Delete(Guid led_stripe_id);
     }
 }

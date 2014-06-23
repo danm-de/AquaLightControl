@@ -1,24 +1,27 @@
 ﻿using System;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
+using AquaLightControl.ClientApi;
+using AquaLightControl.ClientApi.Annotations;
 using ReactiveUI;
 
 namespace AquaLightControl.Gui.ViewModels
 {
     public sealed class LedStripeDialogViewModel : ReactiveObject
     {
+        private readonly IAquaLightConnection _connection;
         private const string COLOR_PROPERTY = "Color";
         private string _name;
         private int _device_number;
         private int _channel_number;
-        private Guid _id = Guid.NewGuid();
+        private Guid _id;
         private bool _is_inverted;
-        private byte _red;
-        private byte _green;
-        private byte _blue;
-        private IReactiveCommand _save_command;
-        private IReactiveCommand _cancel_command;
-        private Action _close;
-        private Action<LedStripe> _save;
+        private byte _red = 255;
+        private byte _green = 255;
+        private byte _blue = 255;
+        private Action _close_action;
+        private string _exception_text;
 
         public Guid Id {
             get { return _id; }
@@ -73,29 +76,101 @@ namespace AquaLightControl.Gui.ViewModels
             }
         }
 
-        public IReactiveCommand SaveCommand {
-            get { return _save_command; }
-            private set { this.RaiseAndSetIfChanged(ref _save_command, value); }
+        public string ExceptionText {
+            get { return _exception_text; }
+            set { 
+                this.RaiseAndSetIfChanged(ref _exception_text, value);
+                raisePropertyChanged("HasException");
+            }
         }
 
-        public IReactiveCommand CancelCommand {
-            get { return _cancel_command; }
-            private set { this.RaiseAndSetIfChanged(ref _cancel_command, value); }
+        public bool HasException {
+            get { return !string.IsNullOrWhiteSpace(_exception_text); }
         }
 
-        public Action Close {
-            get { return _close; }
-            set { this.RaiseAndSetIfChanged(ref _close, value); }
+        public IReactiveCommand SaveCommand { get; private set; }
+        public IReactiveCommand CancelCommand { get; private set; }
+        public IReactiveCommand DeleteCommand { get; private set; }
+
+        public Action CloseAction {
+            get { return _close_action; }
+            set { this.RaiseAndSetIfChanged(ref _close_action, value); }
         }
 
-        public Action<LedStripe> Save {
-            get { return _save; }
-            set { this.RaiseAndSetIfChanged(ref _save, value); }
+        public LedStripeDialogViewModel([NotNull] IAquaLightConnection connection) {
+            if (ReferenceEquals(connection, null)) {
+                throw new ArgumentNullException("connection");
+            }
+            _connection = connection;
+
+            var data_is_valid = this
+                .WhenAny(vm => vm.Name, s => !string.IsNullOrWhiteSpace(s.Value));
+
+            SaveCommand = new ReactiveCommand(data_is_valid);
+            SaveCommand
+                .Subscribe(_ => Save());
+            SaveCommand.ThrownExceptions
+                .Subscribe(ShowException);
+
+            CancelCommand = new ReactiveCommand();
+            CancelCommand
+                .Subscribe(param => OnClose());
+
+            var is_deletable = this
+                .WhenAny(vm => vm.Id, id => id.Value != Guid.Empty);
+
+            DeleteCommand = new ReactiveCommand(is_deletable);
+            DeleteCommand
+                .Subscribe(_ => Delete());
+            DeleteCommand.ThrownExceptions
+                .Subscribe(ShowException);
+
+        }
+
+        public void Initialize(LedStripe led_stripe) {
+            if (ReferenceEquals(led_stripe, null)) {
+                return;
+            }
+            
+            Id = led_stripe.Id;
+            Name = led_stripe.Name;
+            DeviceNumber = led_stripe.DeviceNumber;
+            ChannelNumber = led_stripe.ChannelNumber;
+            IsInverted = led_stripe.Invert;
+            Red = led_stripe.Color.Red;
+            Green = led_stripe.Color.Green;
+            Blue = led_stripe.Color.Blue;
+        }
+
+        private void Delete() {
+            _connection.Delete(_id);
+
+            OnClose();
+        }
+
+        private void Save() {
+            var led_stripe = Create();
+           
+            _connection.Save(led_stripe);
+            
+            OnClose();
+        }
+
+        private void OnClose() {
+            var close_action = _close_action;
+            if (ReferenceEquals(close_action, null)) {
+                return;
+            }
+            close_action();
+        }
+
+        private void ShowException(Exception exception) {
+            ExceptionText = exception.Message;
         }
 
         private LedStripe Create() {
             return new LedStripe {
-                Id = _id,
+                Id = (_id != Guid.Empty) ? _id : Guid.NewGuid(),
                 Name = _name,
                 DeviceNumber = _device_number,
                 ChannelNumber = _channel_number,

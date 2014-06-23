@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using AquaLightControl.Gui.Controls.Views;
+using AquaLightControl.ClientApi;
 using AquaLightControl.Gui.ViewModels;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using ReactiveUI;
 
 namespace AquaLightControl.Gui.Views
 {
@@ -16,25 +12,33 @@ namespace AquaLightControl.Gui.Views
     /// </summary>
     public partial class MainWindow : MetroWindow, ILedStripeViewer, IExceptionViewer
     {
+        private readonly AquaLightConnection _connection;
+        private readonly MainWindowViewModel _main_view_model;
+
         public MainWindow() {
             InitializeComponent();
-            var vm = new MainWindowViewModel();
-            DataContext = vm;
-            vm.ExceptionViewer = this;
-            vm.LedStripeViewer = this;
+            
+            _connection = new AquaLightConnection();
+
+            _main_view_model = new MainWindowViewModel(_connection, this, this);
+
+            DataContext = _main_view_model;
         }
         
         public Task View(Exception exception) {
             return this.ShowMessageAsync("Fehler", exception.Message);
         }
 
-        public Task View(Action<LedStripe> save_command) {
+        public Task View(LedStripe led_stripe) {
             var dialog = (BaseMetroDialog)Resources["LedStripeDialog"];
             
-            var vm = new LedStripeDialogViewModel() {
-                Save = save_command,
-                Close = () => this.HideMetroDialogAsync(dialog)
+            var vm = new LedStripeDialogViewModel(_connection) {
+                CloseAction = () => { 
+                    this.HideMetroDialogAsync(dialog);
+                    _main_view_model.Refresh();
+                }
             };
+            vm.Initialize(led_stripe);
 
             dialog.DataContext = vm;
             return this.ShowMetroDialogAsync(dialog);

@@ -4,10 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:converters="clr-namespace:AquaLightControl.Gui.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="240" d:DesignWidth="430">
+             d:DesignHeight="240" d:DesignWidth="400">
     <Grid>
-        <Grid>
+        <Grid.Resources>
+            <converters:BooleanVisibilityConverter x:Key="VisibilityConverter" />
+        </Grid.Resources>
+
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -19,6 +32,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock Margin="5" Grid.Row="0" Grid.Column="0">Name:</TextBlock>
@@ -57,9 +71,23 @@
                 </StackPanel>
             </Grid>
             <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Command="{Binding Path=SaveCommand}" Margin="5" Width="80" Style="{StaticResource AccentedSquareButtonStyle}">Speichern</Button>
-                <Button Command="{Binding Path=CancelCommand}" Margin="5" Width="80" Style="{StaticResource AccentedSquareButtonStyle}">Abbruch</Button>
+                <Button Command="{Binding Path=SaveCommand}" Margin="5" Width="80" Style="{StaticResource AccentedSquareButtonStyle}">
+                        <TextBlock>Speichern</TextBlock>
+                </Button>
+                <Button Command="{Binding Path=DeleteCommand}" Margin="5" Width="80" Style="{StaticResource AccentedSquareButtonStyle}">
+                    <TextBlock>Löschen</TextBlock>
+                </Button>
+                <Button Command="{Binding Path=CancelCommand}" Margin="5" Width="80" Style="{StaticResource AccentedSquareButtonStyle}">
+                    <TextBlock>Abbruch</TextBlock>
+                </Button>
             </StackPanel>
         </Grid>
+        <TextBlock Grid.Row="1" 
+                   Grid.Column="0" 
+                   TextAlignment="Center"
+                   Background="DarkRed"
+                   Foreground="White"
+                   Visibility="{Binding Path=HasException, Converter={StaticResource VisibilityConverter}}"
+                   Text="{Binding Path=ExceptionText}" />
     </Grid>
 </UserControl>

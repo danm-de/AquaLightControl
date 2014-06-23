@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 using AquaLightControl.ClientApi.Annotations;
 using RestSharp;
 
@@ -37,30 +35,31 @@ namespace AquaLightControl.ClientApi
             _client = new RestClient(base_url);
         }
 
-        public async Task Ping() {
+        public void Ping() {
             var request = new RestRequest("ping", Method.GET);
 
-            var cancel = new CancellationTokenSource();
-            var response = await _client.ExecuteTaskAsync(request, cancel.Token);
+            var response = _client.Execute(request);
+
+            ThrowOnError(response);
 
             if (response.StatusCode == HttpStatusCode.OK && response.Content == PONG) {
                 return;
             }
-            throw new Exception("Unbekannte Antwort: " + response.Content);
+            
+            throw new Exception(string.Format("Unbekannte Antwort ({0}): {1}", response.StatusCode, response.Content));
         }
 
-        public async Task<IEnumerable<LedStripe>> GetAllStripes() {
+        public IEnumerable<LedStripe> GetAllStripes() {
             var request = new RestRequest("stripes", Method.GET);
 
-            var cancel = new CancellationTokenSource();
-            var response = await _client.ExecuteTaskAsync<LedStripe[]>(request, cancel.Token);
+            var response = _client.Execute<List<LedStripe>>(request);
 
             return (response.StatusCode == HttpStatusCode.OK)
                 ? response.Data
                 : Enumerable.Empty<LedStripe>();
         }
 
-        public async Task Save(LedStripe led_stripe) {
+        public void Save(LedStripe led_stripe) {
             if (ReferenceEquals(led_stripe, null)) {
                 throw new ArgumentNullException("led_stripe");
             }
@@ -69,19 +68,53 @@ namespace AquaLightControl.ClientApi
                 throw new ArgumentException("Id required", "led_stripe");
             }
 
-            var request = new RestRequest("stripes/{id}", Method.POST);
-            request.AddUrlSegment("id", led_stripe.Id.ToString());
-            request.RequestFormat = DataFormat.Json;
+            var request = new RestRequest("stripes", Method.POST) {
+                RequestFormat = DataFormat.Json
+            };
             request.AddBody(led_stripe);
 
-            var cancel = new CancellationTokenSource();
-            var response = await _client.ExecuteTaskAsync<LedStripe>(request, cancel.Token);
+            var response = _client.Execute<LedStripe>(request);
+
+            ThrowOnError(response);
 
             if (response.StatusCode == HttpStatusCode.Created) {
                 return;
             }
+            
+            throw new Exception(string.Format("Unerwarteter Fehler beim Speichern ({0}): {1}", response.StatusCode, response.Content));
+        }
 
-            throw new Exception("Unerwarteter Fehler beim Speichern: " + response.Content);
+        public void Delete(Guid led_stripe_id) {
+            if (led_stripe_id == Guid.Empty) {
+                throw new ArgumentException("Id required", "led_stripe_id");
+            }
+
+            var request = new RestRequest("stripes/{id}", Method.DELETE);
+            request.AddUrlSegment("id", led_stripe_id.ToString());
+
+            var response = _client.Execute<LedStripe>(request);
+
+            ThrowOnError(response);
+
+            if (response.StatusCode == HttpStatusCode.OK) {
+                return;
+            }
+
+            throw new Exception(string.Format("Unerwarteter Fehler beim Löschen ({0}): {1}", response.StatusCode, response.Content));
+        }
+
+        private static void ThrowOnError(IRestResponse response) {
+            if (ReferenceEquals(response, null)) {
+                throw new Exception("Unerwarteter Fehler: keine Antwort erhalten.");
+            }
+
+            if (!ReferenceEquals(response.ErrorException, null)) {
+                throw response.ErrorException;
+            }
+
+            if (!ReferenceEquals(response.ErrorMessage, null)) {
+                throw new Exception(response.ErrorMessage);
+            }
         }
 
         [NotifyPropertyChangedInvocator]
