@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AquaLightControl.ClientApi;
 using AquaLightControl.ClientApi.Annotations;
 using ReactiveUI;
 
-namespace AquaLightControl.Gui.ViewModels
+namespace AquaLightControl.Gui.ViewModels.Controls
 {
-    public sealed class LedStripeDialogViewModel : ReactiveObject
+    public sealed class LedDeviceDialogViewModel : ReactiveObject
     {
         private readonly IAquaLightConnection _connection;
         private const string COLOR_PROPERTY = "Color";
@@ -97,7 +95,7 @@ namespace AquaLightControl.Gui.ViewModels
             set { this.RaiseAndSetIfChanged(ref _close_action, value); }
         }
 
-        public LedStripeDialogViewModel([NotNull] IAquaLightConnection connection) {
+        public LedDeviceDialogViewModel([NotNull] IAquaLightConnection connection) {
             if (ReferenceEquals(connection, null)) {
                 throw new ArgumentNullException("connection");
             }
@@ -127,19 +125,19 @@ namespace AquaLightControl.Gui.ViewModels
 
         }
 
-        public void Initialize(LedStripe led_stripe) {
-            if (ReferenceEquals(led_stripe, null)) {
+        public void Initialize(Device led_device) {
+            if (ReferenceEquals(led_device, null)) {
                 return;
             }
             
-            Id = led_stripe.Id;
-            Name = led_stripe.Name;
-            DeviceNumber = led_stripe.DeviceNumber;
-            ChannelNumber = led_stripe.ChannelNumber;
-            IsInverted = led_stripe.Invert;
-            Red = led_stripe.Color.Red;
-            Green = led_stripe.Color.Green;
-            Blue = led_stripe.Color.Blue;
+            Id = led_device.Id;
+            Name = led_device.Name;
+            DeviceNumber = led_device.DeviceNumber;
+            ChannelNumber = led_device.ChannelNumber;
+            IsInverted = led_device.Invert;
+            Red = led_device.Color.Red;
+            Green = led_device.Color.Green;
+            Blue = led_device.Color.Blue;
         }
 
         private void Delete() {
@@ -149,9 +147,9 @@ namespace AquaLightControl.Gui.ViewModels
         }
 
         private void Save() {
-            var led_stripe = Create();
+            var led_device = Create();
            
-            _connection.Save(led_stripe);
+            _connection.Save(led_device);
             
             OnClose();
         }
@@ -168,8 +166,8 @@ namespace AquaLightControl.Gui.ViewModels
             ExceptionText = exception.Message;
         }
 
-        private LedStripe Create() {
-            return new LedStripe {
+        private Device Create() {
+            return new Device {
                 Id = (_id != Guid.Empty) ? _id : Guid.NewGuid(),
                 Name = _name,
                 DeviceNumber = _device_number,

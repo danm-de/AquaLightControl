@@ -5,12 +5,10 @@ namespace AquaLightControl.Service
 {
     static class Program
     {
-        /// <summary>
-        /// Der Haupteinstiegspunkt für die Anwendung.
-        /// </summary>
-        static void Main(string[] args) {
+        private static void Main(string[] args) {
+            ConfigureLogger();
+
             var service = new Service();
-        
 
             if (Environment.UserInteractive) {
                 service.Start(args);
@@ -18,8 +16,12 @@ namespace AquaLightControl.Service
                 Console.ReadKey();
                 service.Stop();
             } else {
-                ServiceBase.Run(new ServiceBase[]{ service});
+                ServiceBase.Run(new ServiceBase[] {service});
             }
+        }
+
+        private static void ConfigureLogger() {
+            log4net.Config.XmlConfigurator.Configure();
         }
     }
 }

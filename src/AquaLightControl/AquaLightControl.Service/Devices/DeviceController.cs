@@ -1,9 +1,11 @@
-﻿using Raspberry.IO.Components.Controllers.Tlc59711;
+﻿using log4net;
+using Raspberry.IO.Components.Controllers.Tlc59711;
 
 namespace AquaLightControl.Service.Devices
 {
     internal sealed class DeviceController : IDeviceController
     {
+        private readonly ILog _logger = LogManager.GetLogger(typeof(DeviceController));
         private readonly IConnectionFactory _connection_factory;
         
        
@@ -31,10 +33,12 @@ namespace AquaLightControl.Service.Devices
             lock (_sync) {
                 
                 if (!ReferenceEquals(_connection, null)) {
+                    _logger.Debug("Destroy TLC59711 device connection");
                     _connection.Dispose();
                     _connection = null;
                 }
-                
+
+                _logger.Debug("Creating new TLC59711 device connection");
                 _connection = _connection_factory.Establish();
             }
         }

@@ -5,23 +5,23 @@ using Nancy.ModelBinding;
 
 namespace AquaLightControl.Service.WebModules
 {
-    public sealed class StripesModule : NancyModule
+    public sealed class DevicesModule : NancyModule
     {
         private readonly ILedDeviceConfiguration _device_configuration;
 
-        public StripesModule(ILedDeviceConfiguration device_configuration) {
+        public DevicesModule(ILedDeviceConfiguration device_configuration) {
             _device_configuration = device_configuration;
 
-            Post["/stripes"] = ctx => Save(ctx);
-            Get["/stripes"] = ctx => LoadAll(ctx);
-            Get["/stripes/{id:guid}"] = ctx => Load(ctx);
-            Delete["/stripes/{id:guid}"] = ctx => Remove(ctx);
+            Post["/devices"] = ctx => Save(ctx);
+            Get["/devices"] = ctx => LoadAll(ctx);
+            Get["/devices/{id:guid}"] = ctx => Load(ctx);
+            Delete["/devices/{id:guid}"] = ctx => Remove(ctx);
         }
 
         private dynamic Remove(dynamic ctx) {
-            var led_stripe_id = (Guid) ctx.id;
+            var device_id = (Guid) ctx.id;
 
-            var deleted_entry = _device_configuration.Delete(led_stripe_id);
+            var deleted_entry = _device_configuration.Delete(device_id);
 
             if (ReferenceEquals(deleted_entry, null)) {
                 return HttpStatusCode.NotFound;
@@ -33,16 +33,16 @@ namespace AquaLightControl.Service.WebModules
         }
         
         private dynamic Load(dynamic ctx) {
-            var led_stripe_id = (Guid)ctx.id;
+            var device_id = (Guid)ctx.id;
 
-            var led_stripe = _device_configuration.Get(led_stripe_id);
+            var device = _device_configuration.Get(device_id);
             
-            if (ReferenceEquals(led_stripe, null)) {
+            if (ReferenceEquals(device, null)) {
                 return HttpStatusCode.NotFound;
             }
 
             return Response
-                .AsJson(led_stripe)
+                .AsJson(device)
                 .WithStatusCode(HttpStatusCode.OK);
         }
 
@@ -53,38 +53,38 @@ namespace AquaLightControl.Service.WebModules
         }
 
         private dynamic Save(dynamic ctx) {
-            var led_stripe = this.Bind<LedStripe>();
+            var device = this.Bind<Device>();
 
-            if (ReferenceEquals(led_stripe, null)) {
+            if (ReferenceEquals(device, null)) {
                 return Response
-                    .AsText("Invalid JSON format for ledStripe.")
+                    .AsText("Invalid JSON format for devices.")
                     .WithStatusCode(HttpStatusCode.BadRequest);
             }
 
-            if (led_stripe.Id == Guid.Empty) {
+            if (device.Id == Guid.Empty) {
                 return Response
-                    .AsText("Unique LED stripe id required")
+                    .AsText("Unique LED device id required")
                     .WithStatusCode(HttpStatusCode.BadRequest);
             }
 
-            if (led_stripe.DeviceNumber < 0) {
+            if (device.DeviceNumber < 0) {
                 return Response
                     .AsText("Device number must be greater or equal than 0")
                     .WithStatusCode(HttpStatusCode.BadRequest);
             }
 
-            if (led_stripe.ChannelNumber < 0) {
+            if (device.ChannelNumber < 0) {
                 return Response
                     .AsText("Channel number must be greater or equal than 0")
                     .WithStatusCode(HttpStatusCode.BadRequest);
             }
 
-            _device_configuration.Save(led_stripe.Id, led_stripe);
+            _device_configuration.Save(device.Id, device);
 
-            var uri = string.Concat(Request.Url.SiteBase, Request.Path, "/", led_stripe.Id);
+            var uri = string.Concat(Request.Url.SiteBase, Request.Path, "/", device.Id);
             
             var response = Response
-                .AsJson(led_stripe)
+                .AsJson(device)
                 .WithStatusCode(HttpStatusCode.Created);
             
             response.Headers.Add("Location", uri);

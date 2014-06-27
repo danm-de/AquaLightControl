@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace AquaLightControl
 {
@@ -6,7 +7,7 @@ namespace AquaLightControl
     public sealed class DailyLightConfiguration
     {
         [DataMember(Name = "lightsConfiguration")]
-        public LightConfiguration[] LightsConfiguration { get; set; }
+        public List<LightConfiguration> LightsConfiguration { get; set; }
 
     }
 }

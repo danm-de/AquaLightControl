@@ -7,8 +7,8 @@ namespace AquaLightControl.ClientApi
     {
         string BaseUrl { get; set; }
         void Ping();
-        IEnumerable<LedStripe> GetAllStripes();
-        void Save(LedStripe led_stripe);
-        void Delete(Guid led_stripe_id);
+        IEnumerable<Device> GetAllDevices();
+        void Save(Device device);
+        void Delete(Guid device_id);
     }
 }

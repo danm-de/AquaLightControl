@@ -3,8 +3,8 @@ using System.Runtime.Serialization;
 
 namespace AquaLightControl
 {
-    [DataContract(Name="ledStripe")]
-    public sealed class LedStripe {
+    [DataContract(Name="device")]
+    public sealed class Device {
         [DataMember(Name="id")]
         public Guid Id { get; set; }
 

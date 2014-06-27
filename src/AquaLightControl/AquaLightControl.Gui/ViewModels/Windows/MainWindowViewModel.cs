@@ -1,0 +1,166 @@
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using AquaLightControl.ClientApi;
+using AquaLightControl.ClientApi.Annotations;
+using AquaLightControl.Configuration;
+using AquaLightControl.Gui.Model;
+using ReactiveUI;
+
+namespace AquaLightControl.Gui.ViewModels.Windows
+{
+    public sealed class MainWindowViewModel : ReactiveObject
+    {
+        private const string CONFIG_REMOTE_ENDPOINT = "RemoteEndpoint";
+        private readonly IAquaLightConnection _connection;
+        private readonly IConfigStore _config_store;
+        private readonly IExceptionViewer _exception_viewer;
+        private readonly ILedDeviceViewer _led_device_viewer;
+        
+        private readonly ObservableCollection<LedDeviceModel> _led_devices = new ObservableCollection<LedDeviceModel>();
+
+        private ConnectionState _connection_state;
+        private string _base_url;
+        private LedDeviceModel _selected_led_device;
+
+        public string BaseUrl {
+            get { return _base_url; }
+            set {
+                this.RaiseAndSetIfChanged(ref _base_url, value);
+
+                _connection.BaseUrl = _base_url;
+                ConnectionState = ConnectionState.Unknown;
+            }
+        }
+        
+        public ConnectionState ConnectionState {
+            get { return _connection_state; }
+            set { this.RaiseAndSetIfChanged(ref _connection_state, value); }
+        }
+
+        public ObservableCollection<LedDeviceModel> LedDevices {
+            get { return _led_devices; }
+        }
+
+        public LedDeviceModel SelectedLedDevice {
+            get { return _selected_led_device; }
+            set { this.RaiseAndSetIfChanged(ref _selected_led_device, value); }
+        }
+
+        public IReactiveCommand CheckConnectionStateCommand { get; private set; }
+        public IReactiveCommand LedDeviceNewCommand { get; private set; }
+        public IReactiveCommand LedDeviceEditCommand { get; private set; }
+        public IReactiveCommand RefreshCommand { get; private set; }
+
+        public MainWindowViewModel([NotNull] IAquaLightConnection connection, [NotNull] IConfigStore config_store, [NotNull] ILedDeviceViewer led_device_viewer, [NotNull] IExceptionViewer exception_viewer) {
+            if (ReferenceEquals(config_store, null)) {
+                throw new ArgumentNullException("config_store");
+            }
+            if (ReferenceEquals(led_device_viewer, null)) {
+                throw new ArgumentNullException("led_device_viewer");
+            }
+            if (ReferenceEquals(exception_viewer, null)) {
+                throw new ArgumentNullException("exception_viewer");
+            }
+            if (ReferenceEquals(connection, null)) {
+                throw new ArgumentNullException("connection");
+            }
+
+            _connection = connection;
+            _config_store = config_store;
+            _led_device_viewer = led_device_viewer;
+            _exception_viewer = exception_viewer;
+            _base_url = _connection.BaseUrl;
+            
+            var is_base_url_set = this
+                .WhenAny(vm => vm.BaseUrl, s => !string.IsNullOrWhiteSpace(s.Value));
+
+            var connection_successful = this
+                .WhenAny(vm => vm.ConnectionState, s => s.Value == ConnectionState.Success);
+
+            CheckConnectionStateCommand = new ReactiveCommand(is_base_url_set);
+            CheckConnectionStateCommand
+                .Subscribe(_ => CheckConnectionState());
+            CheckConnectionStateCommand.ThrownExceptions
+                .Subscribe(exception => _exception_viewer.View(exception));
+
+            var connection_established = is_base_url_set.CombineLatest(connection_successful, (s1, s2) => s1 && s2);
+
+            RefreshCommand = new ReactiveCommand(connection_established);
+            RefreshCommand
+                .Subscribe(param => Refresh());
+            RefreshCommand.ThrownExceptions
+                .Subscribe(exception => _exception_viewer.View(exception));
+
+            LedDeviceNewCommand = new ReactiveCommand(connection_established);
+            LedDeviceNewCommand
+                .RegisterAsyncTask(_ => ShowEmptyLedDeviceDialog());
+            LedDeviceNewCommand.ThrownExceptions
+                .Subscribe(exception => _exception_viewer.View(exception));
+
+            var is_led_device_selected = this
+                .WhenAny(vm => vm.SelectedLedDevice, s => !ReferenceEquals(s.Value, null));
+
+            var edit_enabled = connection_established
+                .CombineLatest(is_led_device_selected, (b1, b2) => b1 && b2);
+
+            LedDeviceEditCommand = new ReactiveCommand(edit_enabled);
+            LedDeviceEditCommand
+                .Subscribe(param => ShowLedDeviceDialog());
+            LedDeviceEditCommand.ThrownExceptions
+                .Subscribe(exception => _exception_viewer.View(exception));
+
+            LoadSettings();
+        }
+
+        private void LoadSettings() {
+            var remote_endpoint = _config_store.Load<string>(CONFIG_REMOTE_ENDPOINT);
+            if (!string.IsNullOrWhiteSpace(remote_endpoint)) {
+                BaseUrl = remote_endpoint;
+            }
+        }
+
+        private void SaveSettings() {
+            _config_store.Save(CONFIG_REMOTE_ENDPOINT, _base_url);
+        }
+
+        public void Refresh() {
+            _led_devices.Clear();
+
+            _connection
+                .GetAllDevices()
+                .Select(device => new LedDeviceModel(device))
+                .OrderBy(m => m.Name)
+                .ForEach(_led_devices.Add);
+        }
+
+        private async Task ShowEmptyLedDeviceDialog() {
+            await _led_device_viewer.View(null);
+        }
+
+        private async Task ShowLedDeviceDialog() {
+            var led_device_model = SelectedLedDevice;
+            
+            if (ReferenceEquals(led_device_model, null)) {
+                return;
+            }
+
+            await _led_device_viewer.View(led_device_model.Item);
+        }
+
+        private void CheckConnectionState() {
+            try {
+                _connection.Ping();
+                ConnectionState = ConnectionState.Success;
+                
+                Refresh();
+                SaveSettings();
+            } catch (Exception) {
+                ConnectionState = ConnectionState.Failed;
+                throw;
+            }
+        }
+    }
+}

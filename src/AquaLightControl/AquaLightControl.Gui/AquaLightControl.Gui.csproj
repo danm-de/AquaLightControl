@@ -107,11 +107,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\Views\LedStripeControl.xaml">
+    <Page Include="Views\Controls\LedDeviceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainWindow.xaml">
+    <Page Include="Views\Controls\LineDrawControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -119,20 +123,24 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controls\Views\LedStripeControl.xaml.cs">
-      <DependentUpon>LedStripeControl.xaml</DependentUpon>
+    <Compile Include="Configuration\UserSettingsStore.cs" />
+    <Compile Include="Views\Controls\LedDeviceControl.xaml.cs">
+      <DependentUpon>LedDeviceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\LineDrawControl.xaml.cs">
+      <DependentUpon>LineDrawControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Converters\EnumVisibilityConverter.cs" />
     <Compile Include="ExtensionMethods\EnumerableExtensionMethods.cs" />
     <Compile Include="Model\ConnectionState.cs" />
-    <Compile Include="Model\LedStripeModel.cs" />
-    <Compile Include="ViewModels\LedStripeDialogViewModel.cs" />
+    <Compile Include="Model\LedDeviceModel.cs" />
+    <Compile Include="ViewModels\Controls\LedDeviceDialogViewModel.cs" />
     <Compile Include="IExceptionViewer.cs" />
-    <Compile Include="ILedStripeViewer.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Views\MainWindow.xaml.cs">
+    <Compile Include="ILedDeviceViewer.cs" />
+    <Compile Include="ViewModels\Windows\MainWindowViewModel.cs" />
+    <Compile Include="Views\Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

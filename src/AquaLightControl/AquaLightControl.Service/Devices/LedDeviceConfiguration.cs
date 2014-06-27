@@ -12,56 +12,58 @@ namespace AquaLightControl.Service.Devices
         private readonly object _sync = new object();
         private readonly IConfigStore _store;
 
-        private readonly Lazy<ConcurrentDictionary<Guid, LedStripe>> _dict;
+        private readonly Lazy<ConcurrentDictionary<Guid, Device>> _dict;
 
         public LedDeviceConfiguration(IConfigStore store) {
             _store = store;
-            _dict = new Lazy<ConcurrentDictionary<Guid, LedStripe>>(LoadFromStore);
+            _dict = new Lazy<ConcurrentDictionary<Guid, Device>>(LoadFromStore);
         }
 
-        public void Save(Guid led_stripe_id, LedStripe led_stripe) {
-            if (ReferenceEquals(led_stripe, null)) {
-                throw new ArgumentNullException("led_stripe");
+        public void Save(Guid device_id, Device device) {
+            if (ReferenceEquals(device, null)) {
+                throw new ArgumentNullException("device");
             }
 
-            if (led_stripe.Id != led_stripe_id) {
-                throw new ArgumentException("LED stripe id must match", "led_stripe");
+            if (device.Id != device_id) {
+                throw new ArgumentException("LED device id must match", "device");
             }
 
-            _dict.Value.AddOrUpdate(led_stripe_id, led_stripe, (g, s) => led_stripe);
-            WriteFromStore();
+            _dict.Value.AddOrUpdate(device_id, device, (g, s) => device);
+            WriteToStore();
         }
 
-        public LedStripe Get(Guid led_stripe_id) {
-            LedStripe led_stripe;
-            return _dict.Value.TryGetValue(led_stripe_id, out led_stripe)
-                ? led_stripe
-                : default(LedStripe);
+        public Device Get(Guid device_id) {
+            Device device;
+            return _dict.Value.TryGetValue(device_id, out device)
+                ? device
+                : default(Device);
         }
 
-        public LedStripe[] GetAll() {
+        public Device[] GetAll() {
             return _dict.Value.Values.ToArray();
         }
 
-        public LedStripe Delete(Guid led_stripe_id) {
-            LedStripe stripe;
-            _dict.Value.TryRemove(led_stripe_id, out stripe);
-            return stripe;
+        public Device Delete(Guid device_id) {
+            Device device;
+            if (_dict.Value.TryRemove(device_id, out device)) {
+                WriteToStore();
+            }
+            return device;
         }
 
-        private ConcurrentDictionary<Guid, LedStripe> LoadFromStore() {
-            var led_stripes = _store.Load<LedStripe[]>(CONFIG_FILE_NAME);
-            if (ReferenceEquals(led_stripes, null)) {
-                return new ConcurrentDictionary<Guid, LedStripe>();
+        private ConcurrentDictionary<Guid, Device> LoadFromStore() {
+            var devices = _store.Load<Device[]>(CONFIG_FILE_NAME);
+            if (ReferenceEquals(devices, null)) {
+                return new ConcurrentDictionary<Guid, Device>();
             }
             
-            var kvps = led_stripes
-                .Select(s => new KeyValuePair<Guid, LedStripe>(s.Id, s));
+            var kvps = devices
+                .Select(s => new KeyValuePair<Guid, Device>(s.Id, s));
 
-            return new ConcurrentDictionary<Guid, LedStripe>(kvps);
+            return new ConcurrentDictionary<Guid, Device>(kvps);
         }
 
-        private void WriteFromStore() {
+        private void WriteToStore() {
             var devices = GetAll();
             lock (_sync) {
                 _store.Save(CONFIG_FILE_NAME, devices);

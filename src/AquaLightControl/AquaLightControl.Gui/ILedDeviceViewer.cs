@@ -2,8 +2,8 @@
 
 namespace AquaLightControl.Gui
 {
-    public interface ILedStripeViewer
+    public interface ILedDeviceViewer
     {
-        Task View(LedStripe led_stripe);
+        Task View(Device device);
     }
 }

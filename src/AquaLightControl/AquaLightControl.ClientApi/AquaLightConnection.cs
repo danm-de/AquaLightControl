@@ -11,7 +11,7 @@ namespace AquaLightControl.ClientApi
 {
     public class AquaLightConnection : IAquaLightConnection, INotifyPropertyChanged
     {
-        private const string DEFAULT_BASE_URL = "http://raspberrypi/";
+        private const string DEFAULT_REMOTE_ENDPOINT = "http://raspberrypi:8080/";
         private const string PONG = "pong";
         private readonly IRestClient _client;
         
@@ -28,7 +28,7 @@ namespace AquaLightControl.ClientApi
         }
 
         public AquaLightConnection() {
-            _client = new RestClient(DEFAULT_BASE_URL);
+            _client = new RestClient(DEFAULT_REMOTE_ENDPOINT);
         }
 
         public AquaLightConnection(string base_url) {
@@ -49,31 +49,31 @@ namespace AquaLightControl.ClientApi
             throw new Exception(string.Format("Unbekannte Antwort ({0}): {1}", response.StatusCode, response.Content));
         }
 
-        public IEnumerable<LedStripe> GetAllStripes() {
-            var request = new RestRequest("stripes", Method.GET);
+        public IEnumerable<Device> GetAllDevices() {
+            var request = new RestRequest("devices", Method.GET);
 
-            var response = _client.Execute<List<LedStripe>>(request);
+            var response = _client.Execute<List<Device>>(request);
 
             return (response.StatusCode == HttpStatusCode.OK)
                 ? response.Data
-                : Enumerable.Empty<LedStripe>();
+                : Enumerable.Empty<Device>();
         }
 
-        public void Save(LedStripe led_stripe) {
-            if (ReferenceEquals(led_stripe, null)) {
-                throw new ArgumentNullException("led_stripe");
+        public void Save(Device device) {
+            if (ReferenceEquals(device, null)) {
+                throw new ArgumentNullException("device");
             }
 
-            if (led_stripe.Id == Guid.Empty) {
-                throw new ArgumentException("Id required", "led_stripe");
+            if (device.Id == Guid.Empty) {
+                throw new ArgumentException("Id required", "device");
             }
 
-            var request = new RestRequest("stripes", Method.POST) {
+            var request = new RestRequest("devices", Method.POST) {
                 RequestFormat = DataFormat.Json
             };
-            request.AddBody(led_stripe);
+            request.AddBody(device);
 
-            var response = _client.Execute<LedStripe>(request);
+            var response = _client.Execute<Device>(request);
 
             ThrowOnError(response);
 
@@ -84,15 +84,15 @@ namespace AquaLightControl.ClientApi
             throw new Exception(string.Format("Unerwarteter Fehler beim Speichern ({0}): {1}", response.StatusCode, response.Content));
         }
 
-        public void Delete(Guid led_stripe_id) {
-            if (led_stripe_id == Guid.Empty) {
-                throw new ArgumentException("Id required", "led_stripe_id");
+        public void Delete(Guid device_id) {
+            if (device_id == Guid.Empty) {
+                throw new ArgumentException("Id required", "device_id");
             }
 
-            var request = new RestRequest("stripes/{id}", Method.DELETE);
-            request.AddUrlSegment("id", led_stripe_id.ToString());
+            var request = new RestRequest("devices/{id}", Method.DELETE);
+            request.AddUrlSegment("id", device_id.ToString());
 
-            var response = _client.Execute<LedStripe>(request);
+            var response = _client.Execute<Device>(request);
 
             ThrowOnError(response);
 

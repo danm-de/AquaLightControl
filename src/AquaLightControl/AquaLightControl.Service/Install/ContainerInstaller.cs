@@ -4,6 +4,7 @@ using AquaLightControl.Configuration;
 using AquaLightControl.Service.Configuration;
 using AquaLightControl.Service.ServiceLocator;
 using AquaLightControl.ServiceLocator;
+using Castle.Facilities.Logging;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
@@ -16,6 +17,7 @@ namespace AquaLightControl.Service.Install
     public sealed class ContainerInstaller : IWindsorInstaller
     {
         public void Install(IWindsorContainer container, IConfigurationStore store) {
+            container.AddFacility<LoggingFacility>(f => f.UseLog4Net());
             container.AddFacility<TypedFactoryFacility>();
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
             container.Kernel.ProxyFactory.AddInterceptorSelector(new NancyRequestScopeInterceptorSelector());
