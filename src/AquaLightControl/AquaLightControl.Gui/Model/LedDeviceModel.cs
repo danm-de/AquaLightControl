@@ -20,6 +20,10 @@ namespace AquaLightControl.Gui.Model
             get { return _led_device; }
         }
 
+        public Guid Id {
+            get { return _led_device.Id; }
+        }
+
         public Brush Color {
             get { return new SolidColorBrush(System.Windows.Media.Color.FromRgb(_led_device.Color.Red, _led_device.Color.Green, _led_device.Color.Blue)); }
         }

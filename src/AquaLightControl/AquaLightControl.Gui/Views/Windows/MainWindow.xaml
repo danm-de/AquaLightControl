@@ -11,9 +11,9 @@
     <Window.Resources>
         <ResourceDictionary>
             <dialogs:SimpleDialog x:Key="LedDeviceDialog" Title="LED hinzufügen">
-                <usercontrols:LedDeviceControl></usercontrols:LedDeviceControl>
+                <usercontrols:LedDeviceControl />
             </dialogs:SimpleDialog>
-        </ResourceDictionary> 
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid d:DataContext="{d:DesignData MainWindowViewModel}">
@@ -36,7 +36,7 @@
                         <TextBox Grid.Row="0"
                                  Grid.Column="0"
                                  Margin="5"
-                                 Text ="{Binding BaseUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding BaseUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  controls:TextboxHelper.Watermark="Serveradresse hier eingeben"
                                  controls:TextboxHelper.ClearTextButton="True" />
 
@@ -46,28 +46,26 @@
                                 Margin="5,10"
                                 Command="{Binding Path=CheckConnectionStateCommand}"
                                 HorizontalAlignment="Right"
-                                Style="{StaticResource AccentedSquareButtonStyle}"
-                         >
+                                Style="{StaticResource AccentedSquareButtonStyle}">
                             <TextBlock>Verbindung aufbauen</TextBlock>
                         </Button>
 
                         <TextBlock Grid.Row="3"
-                                   Grid.Column="0" 
+                                   Grid.Column="0"
                                    Background="DarkRed"
                                    Foreground="White"
                                    TextAlignment="Center"
                                    Height="25"
-                                   Text="Verbindung fehlgeschlagen" 
-                                   Visibility="{Binding Path=ConnectionState, Converter={StaticResource ConnectionStateVisibilityConverter}, ConverterParameter=Failed}"
-                        />
-                        <TextBlock Grid.Row="3" 
-                                   Grid.Column="0" 
+                                   Text="Verbindung fehlgeschlagen"
+                                   Visibility="{Binding Path=ConnectionState, Converter={StaticResource ConnectionStateVisibilityConverter}, ConverterParameter=Failed}" />
+                        <TextBlock Grid.Row="3"
+                                   Grid.Column="0"
                                    Background="DarkOliveGreen"
                                    Foreground="White"
                                    TextAlignment="Center"
                                    Height="25"
-                                   Text="Verbindung erfolgreich" 
-                                   Visibility="{Binding Path=ConnectionState, Converter={StaticResource ConnectionStateVisibilityConverter}, ConverterParameter=Success}"/>
+                                   Text="Verbindung erfolgreich"
+                                   Visibility="{Binding Path=ConnectionState, Converter={StaticResource ConnectionStateVisibilityConverter}, ConverterParameter=Success}" />
                     </Grid>
                 </TabItem>
                 <TabItem Header="LED-Streifen">
@@ -86,11 +84,10 @@
                                   ItemsSource="{Binding Path=LedDevices}"
                                   SelectedItem="{Binding Path=SelectedLedDevice}"
                                   AutoGenerateColumns="False"
-                                  Style="{StaticResource AzureDataGrid}" 
+                                  Style="{StaticResource AzureDataGrid}"
                                   CanUserSortColumns="True"
                                   CanUserReorderColumns="False"
-                                  SelectionMode="Single"
-                                  >
+                                  SelectionMode="Single">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="Farbe" Width="60" IsReadOnly="True">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -102,21 +99,21 @@
                                 <DataGridTemplateColumn Header="Name" Width="300" IsReadOnly="True" CanUserSort="True">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Name}"/>
+                                            <TextBlock Text="{Binding Path=Name}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Header="Gerätenummer" Width="120" IsReadOnly="True" CanUserSort="True">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=DeviceNumber}"/>
+                                            <TextBlock Text="{Binding Path=DeviceNumber}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Header="Kanal" Width="120" IsReadOnly="True" CanUserSort="True">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Channel}"/>
+                                            <TextBlock Text="{Binding Path=Channel}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -125,7 +122,7 @@
 
                         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                             <Button Command="{Binding Path=LedDeviceNewCommand}"
-                                Margin="0,5" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                                    Margin="0,5" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
                                 <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                     <Rectangle.OpacityMask>
                                         <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_add}" />
@@ -133,7 +130,7 @@
                                 </Rectangle>
                             </Button>
 
-                            <Button 
+                            <Button
                                 Command="{Binding Path=LedDeviceEditCommand}"
                                 Margin="0,5" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
                                 <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
@@ -143,10 +140,10 @@
                                 </Rectangle>
                             </Button>
 
-                            <Button 
+                            <Button
                                 Command="{Binding Path=RefreshCommand}"
                                 Margin="0,5,0,0" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
-                                
+
                                 <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                                     <Rectangle.OpacityMask>
                                         <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_refresh}" />
@@ -180,7 +177,7 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <Button 
+                            <Button
                                 Grid.Column="0"
                                 Grid.Row="0"
                                 Command="{Binding Path=RefreshCommand}"
@@ -200,32 +197,31 @@
                                 Margin="0,5,0,0" Width="50" Height="50"
                                 Style="{DynamicResource MetroCircleToggleButtonStyle}">
                                 <Rectangle Width="20"
-                                    Height="20"
-                                    Fill="{DynamicResource BlackBrush}">
-                                        <Rectangle.OpacityMask>
-                                            <VisualBrush Stretch="Fill"
-                                                        Visual="{DynamicResource appbar_graph_line}"/>
-                                        </Rectangle.OpacityMask>
+                                           Height="20"
+                                           Fill="{DynamicResource BlackBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{DynamicResource appbar_graph_line}" />
+                                    </Rectangle.OpacityMask>
                                 </Rectangle>
                             </ToggleButton>
 
-                            <controls:SplitButton 
+                            <controls:SplitButton
                                 IsEnabled="{Binding IsChecked, ElementName=BtnSingleLine}"
-                                Grid.Column="2" 
-                                Grid.Row="0" 
+                                Grid.Column="2"
+                                Grid.Row="0"
                                 Margin="5,10,5,10"
                                 ItemsSource="{Binding Path=LedDevices}"
-                                SelectedItem="{Binding Path=SelectedLedDevice}"
-                                >
+                                SelectedItem="{Binding Path=SelectedLedDevice, Mode=TwoWay}">
                                 <controls:SplitButton.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Margin="0,5"  Width="20" Background="{Binding Path=Color}" VerticalAlignment="Center" />
-                                            <TextBlock Margin="10,5,0,0" Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                            <TextBlock Margin="0,5" Width="20" Background="{Binding Path=Color}" VerticalAlignment="Center" />
+                                            <TextBlock Margin="10,5,0,0" Text="{Binding Path=Name}" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </controls:SplitButton.ItemTemplate>
-                                
+
                             </controls:SplitButton>
 
                             <Button
@@ -250,7 +246,80 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="LED-Test"></TabItem>
+                <TabItem Header="LED-Test">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <controls:ToggleSwitch
+                            Name="TestMode"
+                            Margin="5,10,5,10"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            HorizontalAlignment="Right"
+                            IsChecked="{Binding Path=TestMode}">Testmodus</controls:ToggleSwitch>
+
+                        <controls:SplitButton
+                            IsEnabled="{Binding IsChecked, ElementName=TestMode}"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="5,10,5,10"
+                            ItemsSource="{Binding Path=LedDevices}"
+                            SelectedItem="{Binding Path=SelectedPwmDevice, Mode=TwoWay}">
+                            <controls:SplitButton.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Margin="0,5" Width="20" Background="{Binding Path=Color}" VerticalAlignment="Center" />
+                                        <TextBlock Margin="10,5,0,0" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </controls:SplitButton.ItemTemplate>
+
+                        </controls:SplitButton>
+
+                        <Button
+                            IsEnabled="{Binding IsChecked, ElementName=TestMode}"
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Command="{Binding Path=RefreshCommand}"
+                            Margin="0,5,0,0" Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+
+                            <Rectangle Width="20" Height="20" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_refresh}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+
+                        <controls:NumericUpDown
+                            Margin="5"
+                            Grid.Row="1"
+                            Grid.Column="0" 
+                            Minimum="{Binding Minimum, ElementName=PwmSlider}"
+                            Maximum="{Binding Maximum, ElementName=PwmSlider}"
+                            Value="{Binding Path=SelectedLedDevicePwmValue, Mode=TwoWay}"
+                            />
+                        
+                        <Slider 
+                            Name ="PwmSlider"
+                            Margin="5"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Minimum="0"
+                                Maximum="65535"
+
+                                Value="{Binding Path=SelectedLedDevicePwmValue}"
+                                IsEnabled="{Binding IsChecked, ElementName=TestMode}" />
+                    </Grid>
+                </TabItem>
             </TabControl>
         </controls:MetroContentControl>
     </Grid>

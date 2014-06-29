@@ -5,9 +5,9 @@ namespace AquaLightControl
     [DataContract(Name="operationMode")]
     public enum OperationMode
     {
+        [EnumMember(Value= "normal")]
+        Normal = 0,
         [EnumMember(Value = "testing")]
-        Testing,
-        [EnumMember(Value= "config")]
-        Config
+        Testing = 1
     }
 }

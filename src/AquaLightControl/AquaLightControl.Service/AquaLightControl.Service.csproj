@@ -90,6 +90,7 @@
     <Compile Include="Devices\ConnectionFactory.cs" />
     <Compile Include="Devices\DeviceController.cs" />
     <Compile Include="Devices\DeviceWorker.cs" />
+    <Compile Include="Devices\ExtensionMethods\DeviceExtensionMethods.cs" />
     <Compile Include="Devices\IConnectionFactory.cs" />
     <Compile Include="Devices\IDeviceController.cs" />
     <Compile Include="Devices\Exceptions\NotInitializedException.cs" />
@@ -113,9 +114,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceLocator\ResolvedInstance.cs" />
     <Compile Include="ServiceLocator\ServiceLocatorImpl.cs" />
+    <Compile Include="WebModules\ModeModule.cs" />
     <Compile Include="WebModules\PingModule.cs" />
     <Compile Include="WebModules\DevicesModule.cs" />
-    <Compile Include="WebModules\ValueModule.cs" />
+    <Compile Include="WebModules\PwmSettingModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

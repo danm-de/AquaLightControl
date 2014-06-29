@@ -1,35 +1,41 @@
 ﻿using System;
-using System.Globalization;
 using log4net;
 using Nancy;
 using AquaLightControl.Service.Devices;
+using Nancy.ModelBinding;
 using Raspberry.IO.Components.Controllers.Tlc59711;
 
 namespace AquaLightControl.Service.WebModules
 {
-    public sealed class ValueModule : NancyModule
+    public sealed class PwmSettingModule : NancyModule
     {
-        private readonly ILog _logger = LogManager.GetLogger(typeof(ValueModule));
+        private readonly ILog _logger = LogManager.GetLogger(typeof(PwmSettingModule));
 
         private readonly IDeviceController _device_controller;
         private readonly ILedDeviceConfiguration _device_configuration;
 
-        public ValueModule(IDeviceController device_controller, ILedDeviceConfiguration device_configuration) {
+        public PwmSettingModule(IDeviceController device_controller, ILedDeviceConfiguration device_configuration) {
             _device_controller = device_controller;
             _device_configuration = device_configuration;
             
-            Get["/getValue/{id:guid}"] = ctx => GetValue(ctx);
-            Put["/setValue/{id:guid}/{value:range(0,65535)}"] = ctx => SetValue(ctx);
+            Get["/devices/{id:guid}/pwm"] = ctx => GetValue(ctx);
+            Put["/devices/{id:guid}/pwm"] = ctx => SetValue(ctx);
         }
 
         private dynamic SetValue(dynamic ctx) {
             Func<dynamic, Device, ITlc59711Device,dynamic> action = (context, req_device, device) => {
-                var value = unchecked((ushort) context.value);
+                var pwm_setting = this.Bind<PwmSetting>();
+                if (ReferenceEquals(pwm_setting, null)) {
+                    return Response
+                        .AsText(string.Format("You need to specify PWM settings for device {0}.", req_device.Id))
+                        .WithStatusCode(HttpStatusCode.BadRequest);
+                }
+
                 _logger.DebugFormat("Set PWM value of device {0},{1} to {2}", 
                     req_device.DeviceNumber,
                     req_device.ChannelNumber, 
-                    value);
-                device.Channels.Set(req_device.ChannelNumber, value);
+                    pwm_setting.Value);
+                device.SetPwmValue(req_device, pwm_setting.Value);
                 _device_controller.Update();
                 return HttpStatusCode.Accepted;
             };
@@ -39,14 +45,22 @@ namespace AquaLightControl.Service.WebModules
 
         private dynamic GetValue(dynamic ctx) {
             Func<dynamic, Device, ITlc59711Device, dynamic> action = (context, req_device, device) => {
-                var value = device.Channels.Get(req_device.ChannelNumber);
+                var value = device.GetPwmValue(req_device);
                 _logger.DebugFormat("Get PWM value of device {0},{1} ({2})",
                     req_device.DeviceNumber,
                     req_device.ChannelNumber,
                     value);
-                return Response
-                    .AsText(value.ToString(CultureInfo.InvariantCulture))
+
+                var uri = string.Concat(Request.Url.SiteBase, Request.Path);
+                var response = Response
+                    .AsJson(new PwmSetting {
+                        Value = value
+                    })
                     .WithStatusCode(HttpStatusCode.OK);
+
+                response.Headers.Add("Location", uri);
+
+                return response;
             };
 
             return CheckAndRun(ctx, action);

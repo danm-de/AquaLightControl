@@ -7,8 +7,16 @@ namespace AquaLightControl.ClientApi
     {
         string BaseUrl { get; set; }
         void Ping();
+        
         IEnumerable<Device> GetAllDevices();
-        void Save(Device device);
-        void Delete(Guid device_id);
+       
+        void SaveDevice(Device device);
+        void DeleteDevice(Guid device_id);
+
+        PwmSetting GetPwmSetting(Guid device_id);
+        void SetPwmSetting(Guid device_id, PwmSetting setting);
+        
+        ModeSettings GetModeSettings();
+        void SetModeSettings(ModeSettings mode_settings);
     }
 }

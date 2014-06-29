@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using AquaLightControl.ClientApi;
@@ -11,19 +12,28 @@ using ReactiveUI;
 
 namespace AquaLightControl.Gui.ViewModels.Windows
 {
-    public sealed class MainWindowViewModel : ReactiveObject
+    public sealed class MainWindowViewModel : ReactiveObject, IDisposable
     {
         private const string CONFIG_REMOTE_ENDPOINT = "RemoteEndpoint";
+        
+        private readonly TimeSpan _set_pwm_value_delay = TimeSpan.FromMilliseconds(10);
+        
         private readonly IAquaLightConnection _connection;
         private readonly IConfigStore _config_store;
         private readonly IExceptionViewer _exception_viewer;
         private readonly ILedDeviceViewer _led_device_viewer;
-        
+
         private readonly ObservableCollection<LedDeviceModel> _led_devices = new ObservableCollection<LedDeviceModel>();
 
         private ConnectionState _connection_state;
         private string _base_url;
+        private bool _test_mode;
+        private ushort _selected_led_device_pwm_value;
+        private IDisposable _change_pwm_value_disposable;
+
         private LedDeviceModel _selected_led_device;
+        private LedDeviceModel _selected_pwm_device;
+        private IDisposable _change_pwm_device_disposable;
 
         public string BaseUrl {
             get { return _base_url; }
@@ -47,6 +57,21 @@ namespace AquaLightControl.Gui.ViewModels.Windows
         public LedDeviceModel SelectedLedDevice {
             get { return _selected_led_device; }
             set { this.RaiseAndSetIfChanged(ref _selected_led_device, value); }
+        }
+
+        public LedDeviceModel SelectedPwmDevice {
+            get { return _selected_pwm_device; }
+            set { this.RaiseAndSetIfChanged(ref _selected_pwm_device, value); }
+        }
+
+        public ushort SelectedLedDevicePwmValue {
+            get { return _selected_led_device_pwm_value; }
+            set { this.RaiseAndSetIfChanged(ref _selected_led_device_pwm_value, value); }
+        }
+
+        public bool TestMode {
+            get { return _test_mode; }
+            set { this.RaiseAndSetIfChanged(ref _test_mode, value); }
         }
 
         public IReactiveCommand CheckConnectionStateCommand { get; private set; }
@@ -112,6 +137,28 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             LedDeviceEditCommand.ThrownExceptions
                 .Subscribe(exception => _exception_viewer.View(exception));
 
+            var is_pwm_value_changed = this.WhenAny(model => model.SelectedLedDevicePwmValue, c => c.Value);
+            var is_test_mode_enabled = this.WhenAny(vm => vm.TestMode, test_mode => test_mode);
+            var is_pwm_device_selected = this.WhenAny(vm => vm.SelectedPwmDevice, c => c.Value);
+            
+            _change_pwm_value_disposable = is_pwm_value_changed
+                .CombineLatest(is_pwm_device_selected, is_test_mode_enabled, (value, device, test_mode) => new {
+                    Value = value,
+                    Device = device,
+                    TestMode = test_mode.Value
+                })
+                .Where(c => !ReferenceEquals(c.Device,null) && c.TestMode)
+                .Throttle(_set_pwm_value_delay)
+                .Distinct(c => c.Value)
+                .Where(c => c.Value == SelectedLedDevicePwmValue)
+                .ObserveOn(DispatcherScheduler.Current)
+                .Subscribe(c => TryChangePwmValue(c.Device, c.Value));
+
+            _change_pwm_device_disposable = is_pwm_device_selected
+                .Where(device => !ReferenceEquals(device, null))
+                .ObserveOn(DispatcherScheduler.Current)
+                .Subscribe(device => TryRefreshPwmValue());
+
             LoadSettings();
         }
 
@@ -126,6 +173,31 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             _config_store.Save(CONFIG_REMOTE_ENDPOINT, _base_url);
         }
 
+        
+
+        private void TryChangePwmValue(LedDeviceModel device, ushort value) {
+            try {
+                if (ChangePwmValue(device, value)) return;
+            } catch (Exception exception) {
+                _exception_viewer.View(exception);
+            }
+        }
+
+        private bool ChangePwmValue(LedDeviceModel device, ushort value) {
+            var selected_led_device = device;
+            if (ReferenceEquals(selected_led_device, null)) {
+                return true;
+            }
+
+            _connection.SetPwmSetting(
+                selected_led_device.Id,
+                new PwmSetting {
+                    Value = value
+                }
+            );
+            return false;
+        }
+
         public void Refresh() {
             _led_devices.Clear();
 
@@ -134,6 +206,33 @@ namespace AquaLightControl.Gui.ViewModels.Windows
                 .Select(device => new LedDeviceModel(device))
                 .OrderBy(m => m.Name)
                 .ForEach(_led_devices.Add);
+
+            TestMode = _connection
+                .GetModeSettings()
+                .OperationMode == OperationMode.Testing;
+
+            RefreshPwmValue();
+        }
+
+        private void RefreshPwmValue() {
+            var selected_pwm_device = SelectedPwmDevice;
+            
+            if (ReferenceEquals(selected_pwm_device, null)) {
+                SelectedLedDevicePwmValue = 0;
+                return;
+            }
+
+            SelectedLedDevicePwmValue = _connection
+                .GetPwmSetting(selected_pwm_device.Id)
+                .Value;
+        }
+
+        private void TryRefreshPwmValue() {
+            try {
+                RefreshPwmValue();
+            } catch (Exception exception) {
+                _exception_viewer.View(exception);
+            }
         }
 
         private async Task ShowEmptyLedDeviceDialog() {
@@ -160,6 +259,18 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             } catch (Exception) {
                 ConnectionState = ConnectionState.Failed;
                 throw;
+            }
+        }
+
+        public void Dispose() {
+            if (!ReferenceEquals(_change_pwm_value_disposable, null)) {
+                _change_pwm_value_disposable.Dispose();
+                _change_pwm_value_disposable = null;
+            }
+
+            if (!ReferenceEquals(_change_pwm_device_disposable, null)) {
+                _change_pwm_device_disposable.Dispose();
+                _change_pwm_device_disposable = null;
             }
         }
     }

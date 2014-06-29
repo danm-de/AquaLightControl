@@ -141,7 +141,7 @@ namespace AquaLightControl.Gui.ViewModels.Controls
         }
 
         private void Delete() {
-            _connection.Delete(_id);
+            _connection.DeleteDevice(_id);
 
             OnClose();
         }
@@ -149,7 +149,7 @@ namespace AquaLightControl.Gui.ViewModels.Controls
         private void Save() {
             var led_device = Create();
            
-            _connection.Save(led_device);
+            _connection.SaveDevice(led_device);
             
             OnClose();
         }
