@@ -33,7 +33,7 @@ namespace AquaLightControl.Math
             }
         }
 
-        public PowerCalculator(ILineFunctionFactory factory, IEnumerable<LightTime> light_times) {
+        public PowerCalculator(ILineFunctionFactory factory, IEnumerable<LightLine> light_times) {
             _configurations = light_times
                 .OrderBy(light_time => light_time.Start.X)
                 .Select(light_time => CreateConfiguration(factory, light_time))
@@ -60,10 +60,10 @@ namespace AquaLightControl.Math
             }
         }
 
-        private static Configuration CreateConfiguration(ILineFunctionFactory factory, LightTime light_time) {
-            var start = light_time.Start.X;
-            var end = light_time.End.X;
-            var function = factory.Create(light_time);
+        private static Configuration CreateConfiguration(ILineFunctionFactory factory, LightLine light_line) {
+            var start = light_line.Start.X;
+            var end = light_line.End.X;
+            var function = factory.Create(light_line);
 
             return new Configuration(start, end, function);
         }

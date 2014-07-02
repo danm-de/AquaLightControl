@@ -124,6 +124,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Configuration\UserSettingsStore.cs" />
+    <Compile Include="Model\LedLightCurveModel.cs" />
+    <Compile Include="ViewModels\Controls\LightConfigurationViewModel.cs" />
     <Compile Include="Views\Controls\LedDeviceControl.xaml.cs">
       <DependentUpon>LedDeviceControl.xaml</DependentUpon>
     </Compile>

@@ -14,12 +14,12 @@ namespace Tests.AquaLightControl.Math.PowerCalculatorSpecs
         private PowerCalculator _calculator;
 
         protected override void EstablishContext() {
-            var light_time_1 = new LightTime {
+            var light_time_1 = new LightLine {
                 Start = new Point(0, 10),
                 End =  new Point(10, 10)
             };
 
-            var light_time_2 = new LightTime {
+            var light_time_2 = new LightLine {
                 Start = new Point(10,20),
                 End = new Point(20,20)
             };

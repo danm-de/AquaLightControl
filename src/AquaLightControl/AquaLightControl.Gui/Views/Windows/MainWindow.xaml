@@ -5,6 +5,7 @@
                       xmlns:converters="clr-namespace:AquaLightControl.Gui.Converters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:usercontrols="clr-namespace:AquaLightControl.Gui.Views.Controls"
+                      xmlns:windows="clr-namespace:AquaLightControl.Gui.ViewModels.Windows"
                       mc:Ignorable="d"
                       Title="MainWindow" Height="453" Width="800">
 
@@ -15,8 +16,12 @@
             </dialogs:SimpleDialog>
         </ResourceDictionary>
     </Window.Resources>
-
-    <Grid d:DataContext="{d:DesignData MainWindowViewModel}">
+    
+    <Window.DataContext>
+        <windows:MainWindowViewModel/>
+    </Window.DataContext>
+    
+    <Grid>
         <Grid.Resources>
             <converters:EnumVisibilityConverter x:Key="ConnectionStateVisibilityConverter" />
         </Grid.Resources>
@@ -164,7 +169,11 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <usercontrols:LineDrawControl Grid.Row="1" Grid.Column="0" />
+                        <usercontrols:LineDrawControl 
+                            ViewModel="{Binding Path=LightConfigurationViewModel}"
+                            Grid.Row="1" 
+                            Grid.Column="0" 
+                                                      />
                         <Grid Grid.Row="2" Grid.Column="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -192,6 +201,7 @@
 
                             <ToggleButton
                                 Name="BtnSingleLine"
+                                IsChecked="{Binding Path=ShowOnlySelectedDevice}"
                                 Grid.Column="1"
                                 Grid.Row="0"
                                 Margin="0,5,0,0" Width="50" Height="50"
@@ -223,20 +233,12 @@
                                 </controls:SplitButton.ItemTemplate>
 
                             </controls:SplitButton>
-
+                           
                             <Button
-                                Grid.Column="3"
-                                Grid.Row="0"
-                                Width="80"
-                                Margin="5,10"
-                                HorizontalAlignment="Right"
-                                Style="{StaticResource AccentedSquareButtonStyle}">
-                                <TextBlock>Laden</TextBlock></Button>
-
-                            <Button
+                                IsEnabled="{Binding Path=LightConfigurationHasBeenModified}"
                                 Grid.Column="4"
                                 Grid.Row="0"
-                                Width="80"
+                                Width="90"
                                 Margin="5,10"
                                 HorizontalAlignment="Right"
                                 Style="{StaticResource AccentedSquareButtonStyle}">

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AquaLightControl.ClientApi;
 using AquaLightControl.Gui.Configuration;
+using AquaLightControl.Gui.Model;
 using AquaLightControl.Gui.ViewModels.Controls;
 using AquaLightControl.Gui.ViewModels.Windows;
 using MahApps.Metro.Controls;
@@ -24,7 +25,9 @@ namespace AquaLightControl.Gui.Views.Windows
             _config = new UserSettingsStore();
             _connection = new AquaLightConnection();
 
-            _main_view_model = new MainWindowViewModel(_connection, _config, this, this);
+            var line_draw_view_model = new LightConfigurationViewModel();
+
+            _main_view_model = new MainWindowViewModel(_connection, _config, this, this, line_draw_view_model);
 
             DataContext = _main_view_model;
         }
@@ -33,7 +36,7 @@ namespace AquaLightControl.Gui.Views.Windows
             return this.ShowMessageAsync("Fehler", exception.Message);
         }
 
-        public Task View(Device device) {
+        public Task View(LedDeviceModel device_model) {
             var dialog = (BaseMetroDialog)Resources["LedDeviceDialog"];
             
             var vm = new LedDeviceDialogViewModel(_connection) {
@@ -42,7 +45,7 @@ namespace AquaLightControl.Gui.Views.Windows
                     _main_view_model.Refresh();
                 }
             };
-            vm.Initialize(device);
+            vm.Initialize(device_model);
 
             dialog.DataContext = vm;
             return this.ShowMetroDialogAsync(dialog);

@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Factories\LineFunctionFactory.cs" />
+    <Compile Include="ILineFunction.cs" />
+    <Compile Include="ILineFunctionFactory.cs" />
+    <Compile Include="LightLine.cs" />
     <Compile Include="LineFunction.cs" />
     <Compile Include="PowerCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

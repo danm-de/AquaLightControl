@@ -22,5 +22,8 @@ namespace AquaLightControl
 
         [DataMember(Name="color")]
         public RgbColor Color { get; set; }
+
+        [DataMember(Name="lightConfiguration")]
+        public LightConfiguration LightConfiguration { get; set; }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
 using System.Windows.Media;
 using AquaLightControl.ClientApi;
 using AquaLightControl.ClientApi.Annotations;
+using AquaLightControl.Gui.Model;
 using ReactiveUI;
 
 namespace AquaLightControl.Gui.ViewModels.Controls
@@ -125,19 +128,19 @@ namespace AquaLightControl.Gui.ViewModels.Controls
 
         }
 
-        public void Initialize(Device led_device) {
-            if (ReferenceEquals(led_device, null)) {
+        public void Initialize(LedDeviceModel led_device_model) {
+            if (ReferenceEquals(led_device_model, null)) {
                 return;
             }
-            
-            Id = led_device.Id;
-            Name = led_device.Name;
-            DeviceNumber = led_device.DeviceNumber;
-            ChannelNumber = led_device.ChannelNumber;
-            IsInverted = led_device.Invert;
-            Red = led_device.Color.Red;
-            Green = led_device.Color.Green;
-            Blue = led_device.Color.Blue;
+
+            Id = led_device_model.Id;
+            Name = led_device_model.Name;
+            DeviceNumber = led_device_model.DeviceNumber;
+            ChannelNumber = led_device_model.Channel;
+            IsInverted = led_device_model.IsInverted;
+            Red = led_device_model.Red;
+            Green = led_device_model.Green;
+            Blue = led_device_model.Blue;
         }
 
         private void Delete() {
@@ -173,7 +176,13 @@ namespace AquaLightControl.Gui.ViewModels.Controls
                 DeviceNumber = _device_number,
                 ChannelNumber = _channel_number,
                 Invert = _is_inverted,
-                Color = new RgbColor(_red, _green, _blue)
+                Color = new RgbColor(_red, _green, _blue),
+                LightConfiguration = new LightConfiguration {
+                    DailyLightCurve = new List<Point>() {
+                        new Point(0,0),
+                        new Point(TimeSpan.FromHours(24).Ticks, 0)
+                    }
+                }
             };
         }
     }

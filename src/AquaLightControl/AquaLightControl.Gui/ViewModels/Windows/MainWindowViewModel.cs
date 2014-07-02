@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -8,6 +9,7 @@ using AquaLightControl.ClientApi;
 using AquaLightControl.ClientApi.Annotations;
 using AquaLightControl.Configuration;
 using AquaLightControl.Gui.Model;
+using AquaLightControl.Gui.ViewModels.Controls;
 using ReactiveUI;
 
 namespace AquaLightControl.Gui.ViewModels.Windows
@@ -30,10 +32,14 @@ namespace AquaLightControl.Gui.ViewModels.Windows
         private bool _test_mode;
         private ushort _selected_led_device_pwm_value;
         private IDisposable _change_pwm_value_disposable;
+        private LightConfigurationViewModel _light_configuration_view_model;
 
         private LedDeviceModel _selected_led_device;
         private LedDeviceModel _selected_pwm_device;
         private IDisposable _change_pwm_device_disposable;
+        private bool _show_only_selected_device;
+        private bool _light_configuration_has_been_modified;
+        private IDisposable _light_configuration_changed_disposable;
 
         public string BaseUrl {
             get { return _base_url; }
@@ -56,7 +62,10 @@ namespace AquaLightControl.Gui.ViewModels.Windows
 
         public LedDeviceModel SelectedLedDevice {
             get { return _selected_led_device; }
-            set { this.RaiseAndSetIfChanged(ref _selected_led_device, value); }
+            set { 
+                this.RaiseAndSetIfChanged(ref _selected_led_device, value);
+                LightConfigurationViewModel.SelectedLedDevice = _selected_led_device;
+            }
         }
 
         public LedDeviceModel SelectedPwmDevice {
@@ -74,12 +83,36 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             set { this.RaiseAndSetIfChanged(ref _test_mode, value); }
         }
 
+        public bool ShowOnlySelectedDevice {
+            get { return _show_only_selected_device; }
+            set { 
+                this.RaiseAndSetIfChanged(ref _show_only_selected_device, value);
+                LightConfigurationViewModel.ShowOnlySelectedDevice = _show_only_selected_device;
+            }
+        }
+
+        public bool LightConfigurationHasBeenModified {
+            get { return _light_configuration_has_been_modified; }
+            set { this.RaiseAndSetIfChanged(ref _light_configuration_has_been_modified, value); }
+        }
+        
+        public LightConfigurationViewModel LightConfigurationViewModel {
+            get { return _light_configuration_view_model; }
+            set { this.RaiseAndSetIfChanged(ref _light_configuration_view_model, value); }
+        }
+
         public IReactiveCommand CheckConnectionStateCommand { get; private set; }
         public IReactiveCommand LedDeviceNewCommand { get; private set; }
         public IReactiveCommand LedDeviceEditCommand { get; private set; }
         public IReactiveCommand RefreshCommand { get; private set; }
+        public IReactiveCommand SaveLightConfigurationsCommand { get; private set; }
 
-        public MainWindowViewModel([NotNull] IAquaLightConnection connection, [NotNull] IConfigStore config_store, [NotNull] ILedDeviceViewer led_device_viewer, [NotNull] IExceptionViewer exception_viewer) {
+        public MainWindowViewModel() {}
+
+        public MainWindowViewModel([NotNull] IAquaLightConnection connection, [NotNull] IConfigStore config_store, [NotNull] ILedDeviceViewer led_device_viewer, [NotNull] IExceptionViewer exception_viewer, [NotNull] LightConfigurationViewModel light_configuration_view_model) {
+            if (ReferenceEquals(light_configuration_view_model, null)) {
+                throw new ArgumentNullException("light_configuration_view_model");
+            }
             if (ReferenceEquals(config_store, null)) {
                 throw new ArgumentNullException("config_store");
             }
@@ -92,13 +125,16 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             if (ReferenceEquals(connection, null)) {
                 throw new ArgumentNullException("connection");
             }
-
+            
             _connection = connection;
             _config_store = config_store;
             _led_device_viewer = led_device_viewer;
             _exception_viewer = exception_viewer;
+            _light_configuration_view_model = light_configuration_view_model;
             _base_url = _connection.BaseUrl;
-            
+
+            LightConfigurationViewModel.LedDevices = _led_devices;
+
             var is_base_url_set = this
                 .WhenAny(vm => vm.BaseUrl, s => !string.IsNullOrWhiteSpace(s.Value));
 
@@ -149,7 +185,6 @@ namespace AquaLightControl.Gui.ViewModels.Windows
                 })
                 .Where(c => !ReferenceEquals(c.Device,null) && c.TestMode)
                 .Throttle(_set_pwm_value_delay)
-                .Distinct(c => c.Value)
                 .Where(c => c.Value == SelectedLedDevicePwmValue)
                 .ObserveOn(DispatcherScheduler.Current)
                 .Subscribe(c => TryChangePwmValue(c.Device, c.Value));
@@ -159,7 +194,20 @@ namespace AquaLightControl.Gui.ViewModels.Windows
                 .ObserveOn(DispatcherScheduler.Current)
                 .Subscribe(device => TryRefreshPwmValue());
 
+            SaveLightConfigurationsCommand = new ReactiveCommand(connection_established);
+            SaveLightConfigurationsCommand
+                .Subscribe(param => SaveLightConfiguration());
+            SaveLightConfigurationsCommand.ThrownExceptions
+                .Subscribe(exception => _exception_viewer.View(exception));
+
+            var light_configuration_has_been_changed = _light_configuration_view_model.WhenAny(vm => vm.HasModifiedItems, c => c.Value);
+            _light_configuration_changed_disposable = light_configuration_has_been_changed.Subscribe(new_value => LightConfigurationHasBeenModified = new_value);
+
             LoadSettings();
+        }
+
+        private void SaveLightConfiguration() {
+            throw new NotImplementedException();
         }
 
         private void LoadSettings() {
@@ -173,20 +221,18 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             _config_store.Save(CONFIG_REMOTE_ENDPOINT, _base_url);
         }
 
-        
-
         private void TryChangePwmValue(LedDeviceModel device, ushort value) {
             try {
-                if (ChangePwmValue(device, value)) return;
+                ChangePwmValue(device, value);
             } catch (Exception exception) {
                 _exception_viewer.View(exception);
             }
         }
 
-        private bool ChangePwmValue(LedDeviceModel device, ushort value) {
+        private void ChangePwmValue(LedDeviceModel device, ushort value) {
             var selected_led_device = device;
             if (ReferenceEquals(selected_led_device, null)) {
-                return true;
+                return;
             }
 
             _connection.SetPwmSetting(
@@ -195,7 +241,6 @@ namespace AquaLightControl.Gui.ViewModels.Windows
                     Value = value
                 }
             );
-            return false;
         }
 
         public void Refresh() {
@@ -246,7 +291,7 @@ namespace AquaLightControl.Gui.ViewModels.Windows
                 return;
             }
 
-            await _led_device_viewer.View(led_device_model.Item);
+            await _led_device_viewer.View(led_device_model);
         }
 
         private void CheckConnectionState() {
@@ -271,6 +316,11 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             if (!ReferenceEquals(_change_pwm_device_disposable, null)) {
                 _change_pwm_device_disposable.Dispose();
                 _change_pwm_device_disposable = null;
+            }
+
+            if (!ReferenceEquals(_light_configuration_changed_disposable, null)) {
+                _light_configuration_changed_disposable.Dispose();
+                _light_configuration_changed_disposable = null;
             }
         }
     }

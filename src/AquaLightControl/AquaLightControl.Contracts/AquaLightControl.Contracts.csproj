@@ -42,16 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DailyLightConfiguration.cs" />
     <Compile Include="Configuration\IConfigProvider.cs" />
     <Compile Include="Configuration\IConfigurationStore.cs" />
     <Compile Include="Exceptions\LightTimesMissingException.cs" />
     <Compile Include="Exceptions\NonContinuousLightTimesException.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="LightConfiguration.cs" />
-    <Compile Include="LightTime.cs" />
-    <Compile Include="Math\ILineFunction.cs" />
-    <Compile Include="Math\ILineFunctionFactory.cs" />
     <Compile Include="ModeSettings.cs" />
     <Compile Include="OperationMode.cs" />
     <Compile Include="Point.cs" />
@@ -63,7 +59,9 @@
     <Compile Include="ServiceLocator\IDisposableInstance.cs" />
     <Compile Include="ServiceLocator\IServiceLocator.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Math\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
