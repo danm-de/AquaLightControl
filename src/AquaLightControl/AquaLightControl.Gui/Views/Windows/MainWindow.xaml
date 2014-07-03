@@ -170,7 +170,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <usercontrols:LineDrawControl 
-                            ViewModel="{Binding Path=LightConfigurationViewModel}"
+                            DataContext="{Binding Path=LightConfigurationViewModel}"
                             Grid.Row="1" 
                             Grid.Column="0" 
                                                       />
@@ -201,7 +201,7 @@
 
                             <ToggleButton
                                 Name="BtnSingleLine"
-                                IsChecked="{Binding Path=ShowOnlySelectedDevice}"
+                                IsChecked="{Binding Path=ShowOnlySelectedDevice, Mode=TwoWay}"
                                 Grid.Column="1"
                                 Grid.Row="0"
                                 Margin="0,5,0,0" Width="50" Height="50"

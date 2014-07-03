@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using AquaLightControl.Gui.Helper;
 using AquaLightControl.Gui.Model;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -92,11 +93,19 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             };
 
             var bottom_axis = new DateTimeAxis {
-                Position = AxisPosition.Bottom
+                Position = AxisPosition.Bottom,
+                Minimum = DateTimeCalculator.GetMinimum(),
+                AbsoluteMinimum = DateTimeCalculator.GetMinimum(),
+                Maximum = DateTimeCalculator.GetMaximum(),
+                AbsoluteMaximum = DateTimeCalculator.GetMaximum(),
             };
 
             var left_axis = new LinearAxis {
-                Position = AxisPosition.Left
+                Position = AxisPosition.Left,
+                Minimum = 0,
+                AbsoluteMinimum = 0,
+                Maximum = 65535,
+                AbsoluteMaximum = 65536
             };
 
             plot_model.Axes.Add(bottom_axis);
@@ -190,19 +199,23 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             if (!_show_only_selected_device) {
                 _curve_models.ForEach(m => plot_model.Series.Add(m.Line));
                 raisePropertyChanged("Model");
+                plot_model.InvalidatePlot(false);
                 return;
             }
             var selected_led_device = _selected_led_device;
             if (ReferenceEquals(selected_led_device, null)) {
+                plot_model.InvalidatePlot(false);
                 return;
             }
 
             var curve_model = _curve_models.FirstOrDefault(m => m.Id == selected_led_device.Id);
             if (ReferenceEquals(curve_model, null)) {
+                plot_model.InvalidatePlot(false);
                 return;
             }
 
             plot_model.Series.Add(curve_model.Line);
+            plot_model.InvalidatePlot(false);
             raisePropertyChanged("Model");
         }
 
