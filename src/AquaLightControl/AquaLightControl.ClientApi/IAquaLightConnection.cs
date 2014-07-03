@@ -9,13 +9,14 @@ namespace AquaLightControl.ClientApi
         void Ping();
         
         IEnumerable<Device> GetAllDevices();
-       
+
         void SaveDevice(Device device);
+        void SaveDevice(IEnumerable<Device> devices);
         void DeleteDevice(Guid device_id);
 
         PwmSetting GetPwmSetting(Guid device_id);
         void SetPwmSetting(Guid device_id, PwmSetting setting);
-        
+
         ModeSettings GetModeSettings();
         void SetModeSettings(ModeSettings mode_settings);
     }

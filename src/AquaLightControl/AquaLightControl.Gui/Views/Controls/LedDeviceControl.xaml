@@ -63,11 +63,11 @@
                     Width="25" />
                 <StackPanel Margin="5" Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
                     <TextBlock Margin="5">R:</TextBlock>
-                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Red}"></controls:NumericUpDown>
+                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Red}" Interval="10"></controls:NumericUpDown>
                     <TextBlock Margin="5">G:</TextBlock>
-                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Green}"></controls:NumericUpDown>
+                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Green}" Interval="10"></controls:NumericUpDown>
                     <TextBlock Margin="5">B:</TextBlock>
-                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Blue}"></controls:NumericUpDown>
+                    <controls:NumericUpDown Minimum="0" Maximum="255" Value="{Binding Path=Blue}" Interval="10"></controls:NumericUpDown>
                 </StackPanel>
             </Grid>
             <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">

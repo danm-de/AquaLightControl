@@ -23,6 +23,7 @@ namespace AquaLightControl.Gui.ViewModels.Controls
         private bool _show_only_selected_device;
         private bool _has_modified_items;
         private IDisposable _led_devices_changed_disposable;
+        private IDisposable _modified_curve_models_checker;
 
         public LedDeviceModel SelectedLedDevice {
             get { return _selected_led_device; }
@@ -57,7 +58,7 @@ namespace AquaLightControl.Gui.ViewModels.Controls
                 InitializeModels();
             }
         }
-
+     
         private void InitializeModels() {
             UnsubscribeLedDeviceChanges();
 
@@ -177,15 +178,35 @@ namespace AquaLightControl.Gui.ViewModels.Controls
                 m.Dispose();
                 _curve_models.Remove(m);
             });
+
+            UpdateModifiedItemCheck();
         }
 
         private void AddCurveModels(IEnumerable<LedLightCurveModel> new_curve_models) {
             _curve_models.AddRange(new_curve_models);
+            
+            UpdateModifiedItemCheck();
         }
 
         private void ClearCurveModels() {
             _curve_models.ForEach(m => m.Dispose());
             _curve_models.Clear();
+            
+            UpdateModifiedItemCheck();
+        }
+
+        private void UpdateModifiedItemCheck() {
+            var checker = _modified_curve_models_checker;
+            if (!ReferenceEquals(checker, null)) {
+                checker.Dispose();
+            }
+            
+            checker = _curve_models
+                .Select(cm => cm.WhenAny(m => m.IsModified, s => s.Value))
+                .Merge()
+                .Subscribe(arg => { HasModifiedItems = _curve_models.Any(cm => cm.IsModified); });
+
+            _modified_curve_models_checker = checker;
         }
 
         private void UpdatePlotModel() {
@@ -217,6 +238,10 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             plot_model.Series.Add(curve_model.Line);
             plot_model.InvalidatePlot(false);
             raisePropertyChanged("Model");
+        }
+
+        public void Update() {
+            _curve_models.ForEach(m => m.Update());
         }
 
         public void Dispose() {

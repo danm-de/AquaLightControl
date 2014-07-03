@@ -7,7 +7,7 @@ namespace AquaLightControl.Gui.Views.Controls
     /// </summary>
     public partial class LineDrawControl : UserControl
     {
-        public LineDrawControl() {
+       public LineDrawControl() {
             InitializeComponent();
         }
     }

@@ -235,6 +235,7 @@
                             </controls:SplitButton>
                            
                             <Button
+                                Command="{Binding Path=SaveLightConfigurationsCommand}"
                                 IsEnabled="{Binding Path=LightConfigurationHasBeenModified}"
                                 Grid.Column="4"
                                 Grid.Row="0"

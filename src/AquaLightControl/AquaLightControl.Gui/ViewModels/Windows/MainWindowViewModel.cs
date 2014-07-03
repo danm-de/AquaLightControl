@@ -168,8 +168,10 @@ namespace AquaLightControl.Gui.ViewModels.Windows
                 .CombineLatest(is_led_device_selected, (b1, b2) => b1 && b2);
 
             LedDeviceEditCommand = new ReactiveCommand(edit_enabled);
+            #pragma warning disable 4014
             LedDeviceEditCommand
                 .Subscribe(param => ShowLedDeviceDialog());
+            #pragma warning restore 4014
             LedDeviceEditCommand.ThrownExceptions
                 .Subscribe(exception => _exception_viewer.View(exception));
 
@@ -207,7 +209,13 @@ namespace AquaLightControl.Gui.ViewModels.Windows
         }
 
         private void SaveLightConfiguration() {
-            throw new NotImplementedException();
+            var vm = _light_configuration_view_model;
+            if (ReferenceEquals(vm, null)) {
+                return;
+            }
+
+            vm.Update();
+            _connection.SaveDevice(_led_devices.Select(m => m.Item));
         }
 
         private void LoadSettings() {

@@ -85,6 +85,17 @@ namespace AquaLightControl.ClientApi
             throw new Exception(string.Format("Unerwarteter Fehler beim Speichern ({0}): {1}", response.StatusCode, response.Content));
         }
 
+        
+        public void SaveDevice(IEnumerable<Device> devices) {
+            if (ReferenceEquals(devices, null)) {
+                return;
+            }
+
+            foreach (var device in devices) {
+                SaveDevice(device);
+            }
+        }
+
         public void DeleteDevice(Guid device_id) {
             if (device_id == Guid.Empty) {
                 throw new ArgumentException("Id required", "device_id");
