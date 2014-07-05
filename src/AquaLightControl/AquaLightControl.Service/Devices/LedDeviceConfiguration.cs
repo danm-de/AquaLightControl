@@ -13,6 +13,8 @@ namespace AquaLightControl.Service.Devices
         private readonly IConfigStore _store;
 
         private readonly Lazy<ConcurrentDictionary<Guid, Device>> _dict;
+        
+        public event EventHandler<EventArgs> ConfigurationChanged;
 
         public LedDeviceConfiguration(IConfigStore store) {
             _store = store;
@@ -67,6 +69,15 @@ namespace AquaLightControl.Service.Devices
             var devices = GetAll();
             lock (_sync) {
                 _store.Save(CONFIG_FILE_NAME, devices);
+            }
+
+            OnConfigurationChanged();
+        }
+
+        private void OnConfigurationChanged() {
+            var handler = ConfigurationChanged;
+            if (handler != null) {
+                handler(this, EventArgs.Empty);
             }
         }
     }

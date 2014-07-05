@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AquaLightControl.Math.Helper;
 
 namespace AquaLightControl.Math
 {
-    public class PowerCalculator : ILineFunction
+    public class PowerCalculator : IPowerCalculator
     {
-        private readonly List<Configuration> _configurations;
-
         private class Configuration
         {
             private readonly long _start;
@@ -33,52 +32,63 @@ namespace AquaLightControl.Math
             }
         }
 
-        public PowerCalculator(ILineFunctionFactory factory, IEnumerable<LightLine> light_times) {
-            _configurations = light_times
-                .OrderBy(light_time => light_time.Start.X)
-                .Select(light_time => CreateConfiguration(factory, light_time))
+        private readonly List<long> _configuration_start_times;
+        private readonly List<Configuration> _configurations;
+        private readonly long _start;
+        private readonly long _end;
+
+        public long Start {
+            get { return _start; }
+        }
+        public long End {
+            get { return _end; }
+        }
+
+        public PowerCalculator(ILineFunctionFactory factory, IEnumerable<Point> points) {
+            var ordered_points = points
+                .OrderBy(light_time => light_time.X)
+                .ToArray();
+
+            if (ordered_points.Length < 2) {
+                throw new ArgumentException("Es muss mindestens zwei Punkte in der Zeitachse geben", "points");
+            }
+
+            var lines = new List<Tuple<Point, Point>>();
+            for (var i = 0; i < (ordered_points.Length - 1); i++) {
+                lines.Add(new Tuple<Point,Point>(ordered_points[i], ordered_points[i + 1]));
+            }
+
+            _configurations = lines
+                .Select(line => CreateConfiguration(factory, line.Item1, line.Item2))
                 .ToList();
 
-            Check(_configurations);
+            _configuration_start_times = _configurations
+                .Select(c => c.Start)
+                .ToList();
+
+            _start = _configurations.First().Start;
+            _end = _configurations.Last().End;
         }
-
-        private static void Check(IEnumerable<Configuration> configurations) {
-            long? last_end = null;
-            foreach (var config in configurations) {
-                if (last_end.HasValue) {
-                    if (config.Start != last_end.Value) {
-                        var message = string.Format("Expected a start value of {0} but found {1}.", last_end.Value, config.Start);
-                        throw new NonContinuousLightTimesException(message);
-                    }
-                }
-
-                last_end = config.End;
-            }
-
-            if (!last_end.HasValue) {
-                throw new LightTimesMissingException();
-            }
-        }
-
-        private static Configuration CreateConfiguration(ILineFunctionFactory factory, LightLine light_line) {
-            var start = light_line.Start.X;
-            var end = light_line.End.X;
-            var function = factory.Create(light_line);
-
-            return new Configuration(start, end, function);
+        
+        private static Configuration CreateConfiguration(ILineFunctionFactory factory, Point start, Point end) {
+            var function = factory.Create(start, end);
+            return new Configuration(start.X, end.X, function);
         }
 
         public long GetY(long x) {
-            var config = _configurations
-                .FirstOrDefault(c => c.Start <= x && c.End >= x);
+            var index = _configuration_start_times.BinarySearch(x);
+            if (index < 0) {
+                index = ~index - 1;
+            }
+
+            if (index < 0) {
+                x.ThrowArgumentOutOfRangeException(_start, _end);
+            }
+
+            var config = _configurations[index];
             
-            if (ReferenceEquals(config, null)) {
-                var message = string.Format(
-                    "The value must be between {0} and {1}.", 
-                    _configurations.First().Start, 
-                    _configurations.Last().End
-                );
-                throw new ArgumentOutOfRangeException("x", x, message);
+            if (config.End < x) {
+                x.ThrowArgumentOutOfRangeException(_start, _end);
             }
 
             return config.Line.GetY(x);

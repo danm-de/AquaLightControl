@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factories\PowerCalculatorFactorySpecs\PowerCalculatorFactorySpecs.cs" />
     <Compile Include="LineFunctionSpecs\LineFunctionSpecs.cs" />
     <Compile Include="PowerCalculatorSpecs\PowerCalculatorSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

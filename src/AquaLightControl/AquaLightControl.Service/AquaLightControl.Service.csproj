@@ -76,6 +76,15 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\..\..\packages\Rx-Core.2.1.30214.0\lib\Net40\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\..\..\packages\Rx-Interfaces.2.1.30214.0\lib\Net40\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\..\..\packages\Rx-Linq.2.1.30214.0\lib\Net40\System.Reactive.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -84,6 +93,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clock\Clock.cs" />
+    <Compile Include="Clock\IClock.cs" />
+    <Compile Include="Clock\IReferenceClock.cs" />
+    <Compile Include="Clock\LocalClock.cs" />
     <Compile Include="Configuration\AppConfigProvider.cs" />
     <Compile Include="Configuration\FileConfigurationStore.cs" />
     <Compile Include="Devices\Exceptions\AlreadyStartedException.cs" />
@@ -97,11 +110,21 @@
     <Compile Include="Devices\IDeviceWorker.cs" />
     <Compile Include="Devices\ILedDeviceConfiguration.cs" />
     <Compile Include="Devices\LedDeviceConfiguration.cs" />
+    <Compile Include="ExtensionMethods\CollectionExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\EnumerableExtensionMethods.cs" />
     <Compile Include="Initialization\Bootstrapper.cs" />
+    <Compile Include="Install\ClockInstaller.cs" />
     <Compile Include="Install\ContainerInstaller.cs" />
     <Compile Include="Install\DeviceInstaller.cs" />
     <Compile Include="Install\SerializationInstaller.cs" />
     <Compile Include="IService.cs" />
+    <Compile Include="LightTimes\PowerCalculators\AlwaysOff.cs" />
+    <Compile Include="LightTimes\LightConfiguration.cs" />
+    <Compile Include="LightTimes\Factories\ILightConfigurationFactory.cs" />
+    <Compile Include="LightTimes\Factories\LightConfigurationFactory.cs" />
+    <Compile Include="LightTimes\ILightController.cs" />
+    <Compile Include="LightTimes\LightController.cs" />
+    <Compile Include="LightTimes\LightResult.cs" />
     <Compile Include="Serialization\CustomJsonSerializer.cs" />
     <Compile Include="Serialization\JsonSerializerBuilder.cs" />
     <Compile Include="Service.cs">
@@ -156,6 +179,10 @@
     <ProjectReference Include="..\AquaLightControl.Contracts\AquaLightControl.Contracts.csproj">
       <Project>{b4fdf803-e8da-4896-9188-765b89b04eeb}</Project>
       <Name>AquaLightControl.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AquaLightControl.Math\AquaLightControl.Math.csproj">
+      <Project>{8226ba1d-9be3-40d5-a684-6a5bd482734d}</Project>
+      <Name>AquaLightControl.Math</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

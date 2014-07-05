@@ -41,9 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Factories\LineFunctionFactory.cs" />
+    <Compile Include="Factories\PowerCalculatorFactory.cs" />
+    <Compile Include="Helper\PowerCalculatorHelper.cs" />
     <Compile Include="ILineFunction.cs" />
     <Compile Include="ILineFunctionFactory.cs" />
-    <Compile Include="LightLine.cs" />
+    <Compile Include="IPowerCalculator.cs" />
+    <Compile Include="IPowerCalculatorFactory.cs" />
     <Compile Include="LineFunction.cs" />
     <Compile Include="PowerCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

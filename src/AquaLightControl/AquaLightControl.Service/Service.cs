@@ -40,6 +40,7 @@ namespace AquaLightControl.Service
             container.Install(new IWindsorInstaller[] {
                 new ContainerInstaller(), 
                 new SerializationInstaller(),
+                new ClockInstaller(),
                 new DeviceInstaller()
             });
 

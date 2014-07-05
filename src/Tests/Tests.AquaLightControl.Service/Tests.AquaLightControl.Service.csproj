@@ -56,10 +56,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clock\ClockSpecs\ClockSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AquaLightControl\AquaLightControl.Service\AquaLightControl.Service.csproj">
+      <Project>{70ba3528-c0da-43d3-b445-fe59a8d9e436}</Project>
+      <Name>AquaLightControl.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tests.AquaLightControl\Tests.AquaLightControl.csproj">
+      <Project>{4DF1F4CE-0114-4E9F-AC44-9B12D90436C3}</Project>
+      <Name>Tests.AquaLightControl</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

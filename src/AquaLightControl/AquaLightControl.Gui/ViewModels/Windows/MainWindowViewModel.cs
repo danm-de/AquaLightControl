@@ -80,7 +80,10 @@ namespace AquaLightControl.Gui.ViewModels.Windows
 
         public bool TestMode {
             get { return _test_mode; }
-            set { this.RaiseAndSetIfChanged(ref _test_mode, value); }
+            set {
+                SetOperationMode(value);
+                this.RaiseAndSetIfChanged(ref _test_mode, value); 
+            }
         }
 
         public bool ShowOnlySelectedDevice {
@@ -95,7 +98,7 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             get { return _light_configuration_has_been_modified; }
             set { this.RaiseAndSetIfChanged(ref _light_configuration_has_been_modified, value); }
         }
-        
+
         public LightConfigurationViewModel LightConfigurationViewModel {
             get { return _light_configuration_view_model; }
             set { this.RaiseAndSetIfChanged(ref _light_configuration_view_model, value); }
@@ -223,6 +226,16 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             if (!string.IsNullOrWhiteSpace(remote_endpoint)) {
                 BaseUrl = remote_endpoint;
             }
+        }
+
+        private void SetOperationMode(bool value) {
+            if (value == _test_mode) {
+                return;
+            }
+
+            _connection.SetModeSettings(new ModeSettings {
+                OperationMode = (value) ? OperationMode.Testing : OperationMode.Normal
+            });
         }
 
         private void SaveSettings() {

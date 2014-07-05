@@ -268,7 +268,7 @@
                             Grid.Row="0"
                             Grid.Column="0"
                             HorizontalAlignment="Right"
-                            IsChecked="{Binding Path=TestMode}">Testmodus</controls:ToggleSwitch>
+                            IsChecked="{Binding Path=TestMode, Mode=TwoWay}">Testmodus</controls:ToggleSwitch>
 
                         <controls:SplitButton
                             IsEnabled="{Binding IsChecked, ElementName=TestMode}"

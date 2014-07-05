@@ -14,16 +14,10 @@ namespace Tests.AquaLightControl.Math.PowerCalculatorSpecs
         private PowerCalculator _calculator;
 
         protected override void EstablishContext() {
-            var light_time_1 = new LightLine {
-                Start = new Point(0, 10),
-                End =  new Point(10, 10)
-            };
-
-            var light_time_2 = new LightLine {
-                Start = new Point(10,20),
-                End = new Point(20,20)
-            };
-
+            var p1 = new Point(0, 10);
+            var p2 = new Point(10, 10);
+            var p3 = new Point(20, 20);
+            
             var line_function_1 = A.Fake<ILineFunction>();
             line_function_1.CallsTo(f => f.GetY(A<long>.Ignored)).Returns(10);
 
@@ -31,19 +25,19 @@ namespace Tests.AquaLightControl.Math.PowerCalculatorSpecs
             line_function_2.CallsTo(f => f.GetY(A<long>.Ignored)).Returns(20);
 
             var factory = A.Fake<ILineFunctionFactory>();
-            factory.CallsTo(f => f.Create(light_time_1))
+            factory.CallsTo(f => f.Create(p1, p2))
                 .Returns(line_function_1);
-            factory.CallsTo(f => f.Create(light_time_2))
+            factory.CallsTo(f => f.Create(p2, p3))
                 .Returns(line_function_2);
 
-            _calculator = new PowerCalculator(factory, new[] {light_time_1, light_time_2});
+            _calculator = new PowerCalculator(factory, new[] {p1, p2, p3});
         }
 
         private static IEnumerable TestCases {
             get {
                 yield return new TestCaseData(-1).Throws(typeof(ArgumentOutOfRangeException));
                 yield return new TestCaseData(0).Returns(10);
-                yield return new TestCaseData(10).Returns(10);
+                yield return new TestCaseData(10).Returns(20);
                 yield return new TestCaseData(11).Returns(20);
                 yield return new TestCaseData(20).Returns(20);
                 yield return new TestCaseData(21).Throws(typeof(ArgumentOutOfRangeException));

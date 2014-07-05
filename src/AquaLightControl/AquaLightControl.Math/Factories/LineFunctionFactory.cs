@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace AquaLightControl.Math.Factories
+﻿namespace AquaLightControl.Math.Factories
 {
     public sealed class LineFunctionFactory : ILineFunctionFactory
     {
-        public ILineFunction Create(LightLine light_line) {
-            throw new NotImplementedException();
+        public ILineFunction Create(Point start, Point end) {
+            return new LineFunction(start, end);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace AquaLightControl.Math
 {
     public interface ILineFunctionFactory {
-        ILineFunction Create(LightLine light_line);
+        ILineFunction Create(Point start, Point end);
     }
 }
