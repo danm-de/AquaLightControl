@@ -34,6 +34,7 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
@@ -45,17 +46,18 @@
                                  controls:TextboxHelper.Watermark="Serveradresse hier eingeben"
                                  controls:TextboxHelper.ClearTextButton="True" />
 
-                        <Button Grid.Row="1"
+                        <Button Grid.Row="2"
                                 Grid.Column="0"
                                 Width="200"
+                                Height="50"
                                 Margin="5,10"
                                 Command="{Binding Path=CheckConnectionStateCommand}"
-                                HorizontalAlignment="Right"
+                                HorizontalAlignment="Center"
                                 Style="{StaticResource AccentedSquareButtonStyle}">
                             <TextBlock>Verbindung aufbauen</TextBlock>
                         </Button>
 
-                        <TextBlock Grid.Row="3"
+                        <TextBlock Grid.Row="4"
                                    Grid.Column="0"
                                    Background="DarkRed"
                                    Foreground="White"
@@ -63,7 +65,7 @@
                                    Height="25"
                                    Text="Verbindung fehlgeschlagen"
                                    Visibility="{Binding Path=ConnectionState, Converter={StaticResource ConnectionStateVisibilityConverter}, ConverterParameter=Failed}" />
-                        <TextBlock Grid.Row="3"
+                        <TextBlock Grid.Row="4"
                                    Grid.Column="0"
                                    Background="DarkOliveGreen"
                                    Foreground="White"
@@ -178,6 +180,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -216,9 +219,26 @@
                                 </Rectangle>
                             </ToggleButton>
 
+                            <ToggleButton
+                                IsChecked="{Binding Path=ShowToolTips, Mode=OneWay}"
+                                Command="{Binding Path=ShowToolTipsCommand}"
+                                Grid.Column="2"
+                                Grid.Row="0"
+                                Margin="0,5,0,0" Width="50" Height="50"
+                                Style="{DynamicResource MetroCircleToggleButtonStyle}">
+                                <Rectangle Width="20"
+                                           Height="20"
+                                           Fill="{DynamicResource BlackBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{DynamicResource appbar_crosshair}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </ToggleButton>
+                            
                             <controls:SplitButton
                                 IsEnabled="{Binding IsChecked, ElementName=BtnSingleLine}"
-                                Grid.Column="2"
+                                Grid.Column="3"
                                 Grid.Row="0"
                                 Margin="5,10,5,10"
                                 ItemsSource="{Binding Path=LedDevices}"
@@ -237,7 +257,7 @@
                             <Button
                                 Command="{Binding Path=SaveLightConfigurationsCommand}"
                                 IsEnabled="{Binding Path=LightConfigurationHasBeenModified}"
-                                Grid.Column="4"
+                                Grid.Column="5"
                                 Grid.Row="0"
                                 Width="90"
                                 Margin="5,10"

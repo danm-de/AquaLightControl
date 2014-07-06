@@ -16,7 +16,7 @@ namespace AquaLightControl.Service.Devices
         private readonly object _sync = new object();
 
         private bool _is_initialized;
-        private decimal _update_interval;
+        private long _update_interval;
         private bool _is_running;
         private ITimer _timer;
         private OperationMode _operation_mode = OperationMode.Normal;
@@ -59,12 +59,14 @@ namespace AquaLightControl.Service.Devices
                             }
 
                             // TODO: turn on/off relais 
+                        } else {
+                            // TODO: turn on/off relais 
                         }
                     }
                 };
 
                 _timer.Start(0m);
-                _logger.Debug("Device worker has been started");
+                _logger.Info("Device worker has been started");
             }
         }
 
@@ -77,13 +79,13 @@ namespace AquaLightControl.Service.Devices
                 _is_running = false;
                 _timer.Stop();
                 _timer = null;
-                _logger.Debug("Device worker has been stopped");
+                _logger.Info("Device worker has been stopped");
             }
         }
 
         private void Initialize() {
             var update_interval_string = _config_provider.GetKey(UPDATE_INTERVAL_KEY);
-            _update_interval = uint.Parse(update_interval_string) / 1000m;
+            _update_interval = uint.Parse(update_interval_string);
 
             _logger.DebugFormat("Initialize device worker with an update interval of {0} ms", update_interval_string);
             _device_controller.Initialize();

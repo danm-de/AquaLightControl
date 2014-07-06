@@ -17,13 +17,15 @@ namespace AquaLightControl.Gui.ViewModels.Controls
     {
         private readonly List<LedLightCurveModel> _curve_models = new List<LedLightCurveModel>();
         private readonly PlotModel _model = CreateNewPlotModel();
-
+        private readonly IPlotController _controller = CreateNewController();
+        
         private ObservableCollection<LedDeviceModel> _led_devices;
         private LedDeviceModel _selected_led_device;
         private bool _show_only_selected_device;
         private bool _has_modified_items;
         private IDisposable _led_devices_changed_disposable;
         private IDisposable _modified_curve_models_checker;
+        private bool _show_tool_tips;
 
         public LedDeviceModel SelectedLedDevice {
             get { return _selected_led_device; }
@@ -50,6 +52,10 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             get { return _model; }
         }
 
+        public IPlotController Controller {
+            get { return _controller; }
+        }
+
         public ObservableCollection<LedDeviceModel> LedDevices {
             get { return _led_devices; }
             set { 
@@ -58,7 +64,14 @@ namespace AquaLightControl.Gui.ViewModels.Controls
                 InitializeModels();
             }
         }
-     
+        public bool ShowToolTips {
+            get { return _show_tool_tips; }
+            set {
+                SetShowToolTips(value);
+                this.RaiseAndSetIfChanged(ref _show_tool_tips, value); 
+            }
+        }
+
         private void InitializeModels() {
             UnsubscribeLedDeviceChanges();
 
@@ -87,13 +100,22 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             AddCurveModels(collection.Select(CreateCurveModel));
         }
 
+        private void SetShowToolTips(bool value) {
+            if (value) {
+                _controller.BindMouseEnter(PlotCommands.HoverTrack);
+            } else {
+                _controller.UnbindMouseEnter();
+            }
+            _model.InvalidatePlot(false);
+        }
+
         private static PlotModel CreateNewPlotModel() {
             var plot_model = new PlotModel {
                 LegendSymbolLength = 24,
                 Title = "Lichtzeiten"
             };
 
-            var bottom_axis = new DateTimeAxis {
+            var bottom_axis = new TimeSpanAxis {
                 Position = AxisPosition.Bottom,
                 Minimum = DateTimeCalculator.GetMinimum(),
                 AbsoluteMinimum = DateTimeCalculator.GetMinimum(),
@@ -106,12 +128,17 @@ namespace AquaLightControl.Gui.ViewModels.Controls
                 Minimum = 0,
                 AbsoluteMinimum = 0,
                 Maximum = 65535,
-                AbsoluteMaximum = 65536
+                AbsoluteMaximum = 65536,
+                IsZoomEnabled = false
             };
 
             plot_model.Axes.Add(bottom_axis);
             plot_model.Axes.Add(left_axis);
             return plot_model;
+        }
+
+        private static IPlotController CreateNewController() {
+            return new PlotController();
         }
 
         private void UnsubscribeLedDeviceChanges() {

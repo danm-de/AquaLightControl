@@ -40,6 +40,7 @@ namespace AquaLightControl.Gui.ViewModels.Windows
         private bool _show_only_selected_device;
         private bool _light_configuration_has_been_modified;
         private IDisposable _light_configuration_changed_disposable;
+        private bool _show_tool_tips;
 
         public string BaseUrl {
             get { return _base_url; }
@@ -104,11 +105,17 @@ namespace AquaLightControl.Gui.ViewModels.Windows
             set { this.RaiseAndSetIfChanged(ref _light_configuration_view_model, value); }
         }
 
+        public bool ShowToolTips {
+            get { return _show_tool_tips; }
+            set { this.RaiseAndSetIfChanged(ref _show_tool_tips, value); }
+        }
+
         public IReactiveCommand CheckConnectionStateCommand { get; private set; }
         public IReactiveCommand LedDeviceNewCommand { get; private set; }
         public IReactiveCommand LedDeviceEditCommand { get; private set; }
         public IReactiveCommand RefreshCommand { get; private set; }
         public IReactiveCommand SaveLightConfigurationsCommand { get; private set; }
+        public IReactiveCommand ShowToolTipsCommand { get; private set; }
 
         public MainWindowViewModel() {}
 
@@ -204,6 +211,13 @@ namespace AquaLightControl.Gui.ViewModels.Windows
                 .Subscribe(param => SaveLightConfiguration());
             SaveLightConfigurationsCommand.ThrownExceptions
                 .Subscribe(exception => _exception_viewer.View(exception));
+
+            ShowToolTipsCommand = new ReactiveCommand(connection_established);
+            ShowToolTipsCommand
+                .Subscribe(param => {
+                    ShowToolTips = !ShowToolTips;
+                    _light_configuration_view_model.ShowToolTips = ShowToolTips;
+                });
 
             var light_configuration_has_been_changed = _light_configuration_view_model.WhenAny(vm => vm.HasModifiedItems, c => c.Value);
             _light_configuration_changed_disposable = light_configuration_has_been_changed.Subscribe(new_value => LightConfigurationHasBeenModified = new_value);

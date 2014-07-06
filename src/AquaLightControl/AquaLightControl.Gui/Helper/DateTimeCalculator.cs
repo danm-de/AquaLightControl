@@ -5,11 +5,11 @@ namespace AquaLightControl.Gui.Helper
 {
     internal static class DateTimeCalculator
     {
-        internal static readonly DateTime MagicDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local);
+        internal static readonly TimeSpan Zero = TimeSpan.Zero;
         internal static readonly TimeSpan OneDay = TimeSpan.FromHours(24);
 
         internal static double GetMinimum() {
-            return ConvertX(0);
+            return ConvertX(Zero.Ticks);
         }
 
         internal static double GetMaximum() {
@@ -17,11 +17,13 @@ namespace AquaLightControl.Gui.Helper
         }
 
         internal static double ConvertX(this long ticks) {
-            return DateTimeAxis.ToDouble(MagicDate.AddTicks(ticks));
+            var timespan = TimeSpan.FromTicks(ticks);
+            return TimeSpanAxis.ToDouble(timespan);
         }
 
-        internal static long ConvertX(this double x) {
-            return DateTimeAxis.ToDateTime(x).Ticks - MagicDate.Ticks;
-        }
+       internal static long ConvertX(this double x) {
+            var timespan = TimeSpanAxis.ToTimeSpan(x);
+           return timespan.Ticks;
+       }
     }
 }

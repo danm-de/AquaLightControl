@@ -9,15 +9,19 @@ namespace AquaLightControl.Service.LightTimes
         private readonly IPowerCalculator _power_calculator;
 
         public int DeviceNumber {
-            get { return _device.DeviceNumber; }
+            get { return Device.DeviceNumber; }
         }
 
         public int ChannelNumber {
-            get { return _device.ChannelNumber; }
+            get { return Device.ChannelNumber; }
         }
 
         public IPowerCalculator PowerCalculator {
             get { return _power_calculator; }
+        }
+
+        public Device Device {
+            get { return _device; }
         }
 
         public LightConfiguration(Device device, IPowerCalculator power_calculator) {

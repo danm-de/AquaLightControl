@@ -57,15 +57,15 @@ namespace AquaLightControl.Service
             _logger.InfoFormat("Listening on {0}", url);
 
             if (IsRunningOnMono()) {
-                _logger.Debug("Start device worker thread.");                
+                _logger.Debug("Initiating start of device worker thread");                
                 _device_worker_disposable = _service_locator.Resolve<IDeviceWorker>();
                 _device_worker_disposable.Value.Start();
             }
 
-            _logger.DebugFormat("Start Nancy that will listen on {0}", url);
+            _logger.DebugFormat("Starting Nancy that will listen on {0}...", url);
             _nancy_self_host = new NancyHost(new Bootstrapper(_container, passwd), new Uri(url));
             _nancy_self_host.Start();
-            _logger.Debug("Nancy started");
+            _logger.Debug("...Nancy started");
         }
 
         protected override void OnStop() {
@@ -79,7 +79,7 @@ namespace AquaLightControl.Service
             _nancy_self_host = null;
 
             if (IsRunningOnMono()) {
-                _logger.Debug("Stop device worker thread");
+                _logger.Debug("Initiating stop of device worker thread");
                 _device_worker_disposable.Value.Stop();
                 _device_worker_disposable.Dispose();
             }

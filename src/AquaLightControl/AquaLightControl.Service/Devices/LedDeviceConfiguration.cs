@@ -3,12 +3,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using AquaLightControl.Configuration;
+using log4net;
 
 namespace AquaLightControl.Service.Devices
 {
     internal sealed class LedDeviceConfiguration : ILedDeviceConfiguration
     {
         private const string CONFIG_FILE_NAME = "devices";
+        
+        private readonly ILog _logger = LogManager.GetLogger(typeof(LedDeviceConfiguration));
         private readonly object _sync = new object();
         private readonly IConfigStore _store;
 
@@ -31,6 +34,14 @@ namespace AquaLightControl.Service.Devices
             }
 
             _dict.Value.AddOrUpdate(device_id, device, (g, s) => device);
+            
+            _logger.InfoFormat("Configuration for device Id {0} (name: {1}, dev:{2}, channel: {3}) changed.", 
+                device_id, 
+                device.Name,
+                device.DeviceNumber, 
+                device.ChannelNumber
+            );
+
             WriteToStore();
         }
 
@@ -48,8 +59,16 @@ namespace AquaLightControl.Service.Devices
         public Device Delete(Guid device_id) {
             Device device;
             if (_dict.Value.TryRemove(device_id, out device)) {
+                _logger.InfoFormat("Delete configuration for device Id {0} (name: {1}, dev:{2}, channel: {3}).",
+                    device_id,
+                    device.Name,
+                    device.DeviceNumber,
+                    device.ChannelNumber
+                );
+
                 WriteToStore();
             }
+            
             return device;
         }
 
@@ -70,6 +89,8 @@ namespace AquaLightControl.Service.Devices
             lock (_sync) {
                 _store.Save(CONFIG_FILE_NAME, devices);
             }
+
+            _logger.Debug("Device changes saved");
 
             OnConfigurationChanged();
         }
