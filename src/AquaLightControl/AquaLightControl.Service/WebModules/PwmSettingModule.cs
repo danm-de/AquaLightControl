@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AquaLightControl.Service.Relay;
 using log4net;
 using Nancy;
 using AquaLightControl.Service.Devices;
@@ -13,11 +16,13 @@ namespace AquaLightControl.Service.WebModules
 
         private readonly IDeviceController _device_controller;
         private readonly ILedDeviceConfiguration _device_configuration;
+        private readonly IRelayService _relay_service;
 
-        public PwmSettingModule(IDeviceController device_controller, ILedDeviceConfiguration device_configuration) {
+        public PwmSettingModule(IDeviceController device_controller, ILedDeviceConfiguration device_configuration, IRelayService relay_service) {
             _device_controller = device_controller;
             _device_configuration = device_configuration;
-            
+            _relay_service = relay_service;
+
             Get["/devices/{id:guid}/pwm"] = ctx => GetValue(ctx);
             Put["/devices/{id:guid}/pwm"] = ctx => SetValue(ctx);
         }
@@ -37,10 +42,21 @@ namespace AquaLightControl.Service.WebModules
                     pwm_setting.Value);
                 device.SetPwmValue(req_device, pwm_setting.Value);
                 _device_controller.Update();
+
+                //var power_on = PowerOn(_device_configuration.GetAll());
+                //_relay_service.Turn(power_on);
+
                 return HttpStatusCode.Accepted;
             };
 
             return CheckAndRun(ctx, action);
+        }
+
+        private bool PowerOn(IEnumerable<Device> devices) {
+            return devices.Select(device => _device_controller
+                .GetDevice(device.DeviceNumber)
+                .GetPwmValue(device))
+                .Any(value => value > 0);
         }
 
         private dynamic GetValue(dynamic ctx) {

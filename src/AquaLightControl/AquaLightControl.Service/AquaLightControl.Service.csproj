@@ -125,6 +125,8 @@
     <Compile Include="LightTimes\ILightController.cs" />
     <Compile Include="LightTimes\LightController.cs" />
     <Compile Include="LightTimes\LightResult.cs" />
+    <Compile Include="Relay\IRelayService.cs" />
+    <Compile Include="Relay\RelayService.cs" />
     <Compile Include="Serialization\CustomJsonSerializer.cs" />
     <Compile Include="Serialization\JsonSerializerBuilder.cs" />
     <Compile Include="Service.cs">

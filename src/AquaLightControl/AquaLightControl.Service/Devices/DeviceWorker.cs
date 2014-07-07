@@ -1,5 +1,6 @@
 ﻿using AquaLightControl.Configuration;
 using AquaLightControl.Service.LightTimes;
+using AquaLightControl.Service.Relay;
 using log4net;
 using Raspberry.Timers;
 
@@ -13,6 +14,7 @@ namespace AquaLightControl.Service.Devices
         private readonly IConfigProvider _config_provider;
         private readonly IDeviceController _device_controller;
         private readonly ILightController _light_controller;
+        private readonly IRelayService _relay_service;
         private readonly object _sync = new object();
 
         private bool _is_initialized;
@@ -26,10 +28,11 @@ namespace AquaLightControl.Service.Devices
             set { _operation_mode = value; }
         }
 
-        public DeviceWorker(IConfigProvider config_provider, IDeviceController device_controller, ILightController light_controller) {
+        public DeviceWorker(IConfigProvider config_provider, IDeviceController device_controller, ILightController light_controller, IRelayService relay_service) {
             _config_provider = config_provider;
             _device_controller = device_controller;
             _light_controller = light_controller;
+            _relay_service = relay_service;
         }
 
         public void Start() {
@@ -58,10 +61,8 @@ namespace AquaLightControl.Service.Devices
                                 _device_controller.Update();
                             }
 
-                            // TODO: turn on/off relais 
-                        } else {
-                            // TODO: turn on/off relais 
-                        }
+                            _relay_service.Turn(result.PowerOn);
+                        } 
                     }
                 };
 

@@ -5,6 +5,7 @@ using AquaLightControl.Math.Factories;
 using AquaLightControl.Service.Devices;
 using AquaLightControl.Service.LightTimes;
 using AquaLightControl.Service.LightTimes.Factories;
+using AquaLightControl.Service.Relay;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
@@ -52,6 +53,11 @@ namespace AquaLightControl.Service.Install
                 yield return Component
                     .For<IPowerCalculatorFactory>()
                     .ImplementedBy<PowerCalculatorFactory>()
+                    .LifestyleSingleton();
+
+                yield return Component
+                    .For<IRelayService>()
+                    .ImplementedBy<RelayService>()
                     .LifestyleSingleton();
 
                 yield return Component

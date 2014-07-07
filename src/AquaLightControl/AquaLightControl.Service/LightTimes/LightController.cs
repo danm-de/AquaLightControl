@@ -61,7 +61,7 @@ namespace AquaLightControl.Service.LightTimes
             var time = _clock.GetTicksForTimeOfDay();
             var list = _light_configurations;
 
-            var all_off = true;
+            var power_on = false;
             var has_changes = false;
 
             foreach (var config in list) {
@@ -75,13 +75,13 @@ namespace AquaLightControl.Service.LightTimes
                 }
 
                 if (new_value > 0) {
-                    all_off = false;
+                    power_on = true;
                 }
             }
             
-            return new LightResult(has_changes, all_off);
+            return new LightResult(has_changes, power_on);
         }
-
+        
         public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
