@@ -28,6 +28,10 @@ namespace AquaLightControl.Service.WebModules
         }
 
         private dynamic SetValue(dynamic ctx) {
+            var all_devices = _device_configuration
+                .GetAll()
+                .ToArray();
+
             Func<dynamic, Device, ITlc59711Device,dynamic> action = (context, req_device, device) => {
                 var pwm_setting = this.Bind<PwmSetting>();
                 if (ReferenceEquals(pwm_setting, null)) {
@@ -40,23 +44,17 @@ namespace AquaLightControl.Service.WebModules
                     req_device.DeviceNumber,
                     req_device.ChannelNumber, 
                     pwm_setting.Value);
+                
                 device.SetPwmValue(req_device, pwm_setting.Value);
                 _device_controller.Update();
 
-                //var power_on = PowerOn(_device_configuration.GetAll());
-                //_relay_service.Turn(power_on);
+                var power_on = _device_controller.HasPwmValueGreaterThanZero(all_devices);
+                _relay_service.Turn(power_on);
 
                 return HttpStatusCode.Accepted;
             };
 
             return CheckAndRun(ctx, action);
-        }
-
-        private bool PowerOn(IEnumerable<Device> devices) {
-            return devices.Select(device => _device_controller
-                .GetDevice(device.DeviceNumber)
-                .GetPwmValue(device))
-                .Any(value => value > 0);
         }
 
         private dynamic GetValue(dynamic ctx) {

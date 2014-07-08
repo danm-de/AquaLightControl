@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -18,7 +17,7 @@ namespace AquaLightControl.Gui.ViewModels.Windows
     {
         private const string CONFIG_REMOTE_ENDPOINT = "RemoteEndpoint";
         
-        private readonly TimeSpan _set_pwm_value_delay = TimeSpan.FromMilliseconds(10);
+        private readonly TimeSpan _set_pwm_value_delay = TimeSpan.FromMilliseconds(100);
         
         private readonly IAquaLightConnection _connection;
         private readonly IConfigStore _config_store;

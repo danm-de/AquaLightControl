@@ -328,7 +328,7 @@
                             Grid.Column="0" 
                             Minimum="{Binding Minimum, ElementName=PwmSlider}"
                             Maximum="{Binding Maximum, ElementName=PwmSlider}"
-                            Value="{Binding Path=SelectedLedDevicePwmValue, Mode=TwoWay}"
+                            Value="{Binding Value, ElementName=PwmSlider}"
                             />
                         
                         <Slider 
