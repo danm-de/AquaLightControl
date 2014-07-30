@@ -235,24 +235,28 @@
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                             </ToggleButton>
-                            
-                            <controls:SplitButton
+
+                            <ComboBox  
                                 IsEnabled="{Binding IsChecked, ElementName=BtnSingleLine}"
                                 Grid.Column="3"
                                 Grid.Row="0"
                                 Margin="5,10,5,10"
                                 ItemsSource="{Binding Path=LedDevices}"
-                                SelectedItem="{Binding Path=SelectedLedDevice, Mode=TwoWay}">
-                                <controls:SplitButton.ItemTemplate>
+                                SelectedItem="{Binding Path=SelectedLedDevice}"
+                                >
+                                <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Margin="0,5" Width="20" Background="{Binding Path=Color}" VerticalAlignment="Center" />
-                                            <TextBlock Margin="10,5,0,0" Text="{Binding Path=Name}" VerticalAlignment="Center" />
-                                        </StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Margin="0,5" Width="20" Background="{Binding Path=Color}" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="1" Margin="10,5,0,0" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                                        </Grid>
                                     </DataTemplate>
-                                </controls:SplitButton.ItemTemplate>
-
-                            </controls:SplitButton>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                            
                             <Button
                                 Command="{Binding Path=SaveLightConfigurationsCommand}"
@@ -290,23 +294,23 @@
                             HorizontalAlignment="Right"
                             IsChecked="{Binding Path=TestMode, Mode=TwoWay}">Testmodus</controls:ToggleSwitch>
 
-                        <controls:SplitButton
+                        <ComboBox
                             IsEnabled="{Binding IsChecked, ElementName=TestMode}"
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="5,10,5,10"
                             ItemsSource="{Binding Path=LedDevices}"
                             SelectedItem="{Binding Path=SelectedPwmDevice, Mode=TwoWay}">
-                            <controls:SplitButton.ItemTemplate>
+                            <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Margin="0,5" Width="20" Background="{Binding Path=Color}" VerticalAlignment="Center" />
                                         <TextBlock Margin="10,5,0,0" Text="{Binding Path=Name}" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </DataTemplate>
-                            </controls:SplitButton.ItemTemplate>
+                            </ComboBox.ItemTemplate>
 
-                        </controls:SplitButton>
+                        </ComboBox>
 
                         <Button
                             IsEnabled="{Binding IsChecked, ElementName=TestMode}"
@@ -329,6 +333,7 @@
                             Minimum="{Binding Minimum, ElementName=PwmSlider}"
                             Maximum="{Binding Maximum, ElementName=PwmSlider}"
                             Value="{Binding Value, ElementName=PwmSlider}"
+                            IsEnabled="{Binding IsChecked, ElementName=TestMode}"
                             />
                         
                         <Slider 

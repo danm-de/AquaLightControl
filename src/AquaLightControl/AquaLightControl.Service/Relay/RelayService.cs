@@ -29,7 +29,7 @@ namespace AquaLightControl.Service.Relay
             int gpio_pin_value;
             if (!string.IsNullOrWhiteSpace(gpio_pin_string) && int.TryParse(gpio_pin_string, out gpio_pin_value)) {
                 _pin = (ProcessorPin)gpio_pin_value;
-                _logger.DebugFormat("Relais ist an PIN {0} angeschlossen", _pin);
+                _logger.DebugFormat("Relay is connected at pin {0}", _pin);
 
                 try {
                     _driver = new FileGpioConnectionDriver();
@@ -39,7 +39,7 @@ namespace AquaLightControl.Service.Relay
                     _driver = null;
                 }
             } else {
-                _logger.Debug("Kein Relais-PIN konfiguriert");
+                _logger.Debug("No GPIO pin for relay configured");
             }
         }
 
@@ -60,11 +60,11 @@ namespace AquaLightControl.Service.Relay
             
             try {
                 _driver.Write(_pin, power_on);
-                _logger.DebugFormat("Relais geschalten: {0}", (power_on)
-                    ? "EIN"
-                    : "AUS");
+                _logger.DebugFormat("Relay power {0}", (power_on)
+                    ? "on"
+                    : "off");
             } catch (Exception exception) {
-                _logger.Fatal("Fehler beim Schalten des Relais: " + exception.Message, exception);
+                _logger.Fatal("Error when trying to switch relay: " + exception.Message, exception);
             }
         }
 
@@ -74,7 +74,7 @@ namespace AquaLightControl.Service.Relay
         }
 
         private void Dispose(bool disposing) {
-            Trace.Assert(disposing, "Relais-Service wurde nicht ordnungsgemäß disposed.");
+            Trace.Assert(disposing, "Relay-Service has not been disposed.");
             
             if (!_disposed) {
                 if (!ReferenceEquals(_driver, null)) {
