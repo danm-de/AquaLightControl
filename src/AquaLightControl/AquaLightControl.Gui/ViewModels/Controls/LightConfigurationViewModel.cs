@@ -4,10 +4,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Timers;
 using AquaLightControl.Gui.Helper;
 using AquaLightControl.Gui.Model;
 using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using ReactiveUI;
 
@@ -15,10 +18,12 @@ namespace AquaLightControl.Gui.ViewModels.Controls
 {
     public sealed class LightConfigurationViewModel : ReactiveObject, IDisposable
     {
-        private readonly List<LedLightCurveModel> _curve_models = new List<LedLightCurveModel>();
-        private readonly PlotModel _model = CreateNewPlotModel();
-        private readonly IPlotController _controller = CreateNewController();
-        
+        private static readonly long _ticks_per_day = TimeSpan.FromHours(24).Ticks;
+        private readonly List<LedLightCurveModel> _curve_models;
+        private readonly PlotModel _model;
+        private readonly IPlotController _controller;
+        private readonly LineAnnotation _now_annotation;
+
         private ObservableCollection<LedDeviceModel> _led_devices;
         private LedDeviceModel _selected_led_device;
         private bool _show_only_selected_device;
@@ -26,6 +31,23 @@ namespace AquaLightControl.Gui.ViewModels.Controls
         private IDisposable _led_devices_changed_disposable;
         private IDisposable _modified_curve_models_checker;
         private bool _show_tool_tips;
+        private IDisposable _timer;
+
+        public LightConfigurationViewModel() {
+            _curve_models = new List<LedLightCurveModel>();
+            _model = CreateNewPlotModel();
+            _controller = CreateNewController();
+
+            _now_annotation = CreateLineAnnotation();
+            _model.Annotations.Add(_now_annotation);
+
+            InitializeLightTimer();
+        }
+
+        private void InitializeLightTimer() {
+            _timer = Observable.Timer(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5), DispatcherScheduler.Current)
+                .Subscribe(_ => SetCurrentTimeLine());
+        }
 
         public LedDeviceModel SelectedLedDevice {
             get { return _selected_led_device; }
@@ -90,6 +112,11 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             } 
         }
 
+        private void SetCurrentTimeLine() {
+            _now_annotation.X = Math.Min(DateTime.Now.TimeOfDay.Ticks, _ticks_per_day).ConvertX();
+            _model.InvalidatePlot(false);
+        }
+
         private void RecreateCurveModels(IEnumerable<LedDeviceModel> collection) {
             ClearCurveModels();
             
@@ -116,6 +143,8 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             };
 
             var bottom_axis = new TimeSpanAxis {
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot,
                 Position = AxisPosition.Bottom,
                 Minimum = DateTimeCalculator.GetMinimum(),
                 AbsoluteMinimum = DateTimeCalculator.GetMinimum(),
@@ -124,6 +153,8 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             };
 
             var left_axis = new LinearAxis {
+                MajorGridlineStyle = LineStyle.Dot,
+                MinorGridlineStyle = LineStyle.Dot,
                 Position = AxisPosition.Left,
                 Minimum = 0,
                 AbsoluteMinimum = 0,
@@ -131,7 +162,7 @@ namespace AquaLightControl.Gui.ViewModels.Controls
                 AbsoluteMaximum = 65536,
                 IsZoomEnabled = false
             };
-
+            
             plot_model.Axes.Add(bottom_axis);
             plot_model.Axes.Add(left_axis);
             return plot_model;
@@ -139,6 +170,16 @@ namespace AquaLightControl.Gui.ViewModels.Controls
 
         private static IPlotController CreateNewController() {
             return new PlotController();
+        }
+
+        private static LineAnnotation CreateLineAnnotation() {
+            var now_annotation = new LineAnnotation {
+                Type = LineAnnotationType.Vertical,
+                X = DateTimeCalculator.GetMinimum(),
+                LineStyle = LineStyle.Solid
+            };
+
+            return now_annotation;
         }
 
         private void UnsubscribeLedDeviceChanges() {
@@ -215,6 +256,14 @@ namespace AquaLightControl.Gui.ViewModels.Controls
             UpdateModifiedItemCheck();
         }
 
+        private void StopTimer() {
+            if (ReferenceEquals(_timer, null)) {
+                return;
+            }
+
+            _timer.Dispose();
+        }
+
         private void ClearCurveModels() {
             _curve_models.ForEach(m => m.Dispose());
             _curve_models.Clear();
@@ -274,6 +323,7 @@ namespace AquaLightControl.Gui.ViewModels.Controls
         public void Dispose() {
             ClearCurveModels();
             UnsubscribeLedDeviceChanges();
+            StopTimer();
         }
 
         private static LedLightCurveModel CreateCurveModel(LedDeviceModel led_device_model) {
