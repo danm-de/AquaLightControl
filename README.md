@@ -26,4 +26,9 @@ Simple HTTP/REST API to access the AquaLightControl.Service application.
 
 AquaLightControl.Gui
 --------------------
-Windows GUI application written in C#/WPF.
+Windows GUI application written in C#/WPF. Screenshots:
+![Channel overview](https://danm.de/pictures/Hobby%20-%20AquaLightControl/screenshot-001-%C3%BCbersicht.png)
+![Add another LED stripe](https://danm.de/pictures/Hobby%20-%20AquaLightControl/screenshot-002-led-hinzuf%C3%BCgen.png)
+![View all LED power levels](https://danm.de/pictures/Hobby%20-%20AquaLightControl/screenshot-003-alle-kurven.png)
+![View single power level](https://danm.de/pictures/Hobby%20-%20AquaLightControl/screenshot-004-einzelne-kurve.png)
+![Connection error](https://danm.de/pictures/Hobby%20-%20AquaLightControl/screenshot-005-error.png)
